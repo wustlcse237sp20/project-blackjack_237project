@@ -6,7 +6,7 @@ public class Player {
 	public ArrayList<Card> hand;
 	public int score;
 	
-	Player(){
+	public Player(){
 		hand = new ArrayList<Card>();
 	}
 	
