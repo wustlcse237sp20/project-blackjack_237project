@@ -111,14 +111,22 @@ public class Blackjack implements ActionListener{
 	}
 	
 	private void getGameParameters() {
-		String s = (String)JOptionPane.showInputDialog(frame, "How many decks to play with (up to 8)?", "Blackjack", JOptionPane.QUESTION_MESSAGE);
+		String numberOfDecks = (String)JOptionPane.showInputDialog(
+											frame, 
+											"How many decks to play with (up to 8)?", 
+											"Blackjack", 
+											JOptionPane.QUESTION_MESSAGE);
 		try {
 			while(true) {
-				if(s.length() == 1 && deck.setNumberOfDecks(s.charAt(0) - '0')) {
+				if(numberOfDecks.length() == 1 && deck.setNumberOfDecks(numberOfDecks.charAt(0) - '0')) {
 					break;
 				} else {
-					JOptionPane.showMessageDialog(frame, "Please enter a number 1-8", "Error", JOptionPane.ERROR_MESSAGE);
-					s = (String)JOptionPane.showInputDialog(frame, "How many decks to play with (up to 8)?");
+					JOptionPane.showMessageDialog(
+										frame, 
+										"Please enter a number 1-8", 
+										"Error", 
+										JOptionPane.ERROR_MESSAGE);
+					numberOfDecks = (String)JOptionPane.showInputDialog(frame, "How many decks to play with (up to 8)?");
 				}
 			}
 		} catch (NullPointerException e) { //Cancel button or exit button pressed, so exit the program
