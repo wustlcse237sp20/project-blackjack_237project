@@ -10,11 +10,11 @@ public class Player {
 		hand = new ArrayList<Card>();
 	}
 	
-	public void hit() {
-		
+	public void hit(Card card) {
+		hand.add(card);
 	}
 	
 	public void stand() {
-		
+		//do nothing
 	}
 }

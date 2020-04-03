@@ -19,13 +19,15 @@ public class Blackjack implements ActionListener{
 	private int frameHeight = 700;
 	private int frameWidth = 700;
 	private Deck deck = new Deck();
-	private Player dealer = new Player();
-	private Player user = new Player();
-
+	public Player dealer = new Player();
+	public Player user = new Player();
+	private ArrayList<Player> players = new ArrayList<Player>();
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -42,22 +44,47 @@ public class Blackjack implements ActionListener{
 	 * Setup the window and run the game
 	 */
 	public Blackjack() {
+		players.add(user);
+		players.add(dealer);
 		initializeFrame();
 		initializeInput();
 		getGameParameters();
 		runHand();
 	}
 	private void runHand() {
+		
 		deck.shuffle();
-		deck.dealOutHands();
+//		for(int i =0;i<1;i++) {
+//			for(Player player: players) {
+//				player.hand.add(deck.allCardsInGame.get(0));
+//				System.out.println("before remove");
+//				deck.allCardsInGame.remove(0);
+//			}
+//		}
+//		user.hand.add(new Card("S13"));
+//		user.hand.add(new Card("S13"));
+//		dealer.hand.add(new Card("S13"));
+//		dealer.hand.add(new Card("S13"));
+		user.hit(deck.allCardsInGame.get(0));
+		deck.allCardsInGame.remove(0);
+		user.hit(deck.allCardsInGame.get(0));
+		deck.allCardsInGame.remove(0);
+		dealer.hit(deck.allCardsInGame.get(0));
+		deck.allCardsInGame.remove(0);
+		dealer.hit(deck.allCardsInGame.get(0));
+		deck.allCardsInGame.remove(0);
+		System.out.println(user.hand);
+		System.out.println(dealer.hand);
 		displayHandsOnFrame(true);
+		System.out.println("display");
 	}
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
 		System.out.println(action);
 		switch(action) {
 			case "Hit":
-				user.hit();
+				user.hit(deck.allCardsInGame.get(0));
+				deck.allCardsInGame.remove(0);
 				displayHandsOnFrame(true);
 				if(user.score > 21) {
 					//display loss text
