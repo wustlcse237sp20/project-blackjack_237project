@@ -19,16 +19,21 @@ public class Blackjack implements ActionListener{
 	private JFrame frame;
 	private int frameHeight = 700;
 	private int frameWidth = 700;
-	public Deck deck = new Deck();
+
+	private Deck deck = new Deck();
 	public Player dealer = new Player();
 	public Player user = new Player();
+	private ArrayList<Player> players = new ArrayList<Player>();
 	public boolean handOver = false;
 	public boolean handWon = false;
+
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -45,24 +50,29 @@ public class Blackjack implements ActionListener{
 	 * Setup the window and run the game
 	 */
 	public Blackjack() {
+		players.add(user);
+		players.add(dealer);
 		initializeFrame();
 		initializeInput();
 		getGameParameters();
 		runHand();
 	}
 	private void runHand() {
+
 		handOver = false;
 		handWon = true;
 		deck.shuffle();
-		deck.dealOutHands();
+		deck.dealOutHands(players);
 		displayHandsOnFrame(true);
+		System.out.println("display");
 	}
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
 		System.out.println(action);
 		switch(action) {
 			case "Hit":
-				user.hit();
+				user.hit(deck.allCardsInGame.get(0));
+				deck.allCardsInGame.remove(0);
 				displayHandsOnFrame(true);
 				if(user.score > 21) {
 					handOver = true;
