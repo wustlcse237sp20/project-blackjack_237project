@@ -11,6 +11,7 @@
   A dealer should be able to complete their hand based on hitting rules for the dealer.<br/>
 
 ## Stories to implement for Iteration 2:<br/>
+  A player should be able to choose to start the game with a certain number of chips. <br/>
   A player should be able to bet on each hand and recieve winnings based on payout rules.<br/>
   A player should be able to double down on their hand.<br/>
   A player should be able to split their hand.<br/>
