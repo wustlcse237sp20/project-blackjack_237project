@@ -1,6 +1,6 @@
 # cse237-project
 
-Implemented stories:
+Implemented stories:\n
   A player should be able to choose how many decks to play with.
   A player should be able to hit and stand.
   A player should be able to see the scores and hands of the dealer and player throughout a round at the appropriate times.
