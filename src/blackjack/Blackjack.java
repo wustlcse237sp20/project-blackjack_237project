@@ -54,27 +54,7 @@ public class Blackjack implements ActionListener{
 	private void runHand() {
 		
 		deck.shuffle();
-//		for(int i =0;i<1;i++) {
-//			for(Player player: players) {
-//				player.hand.add(deck.allCardsInGame.get(0));
-//				System.out.println("before remove");
-//				deck.allCardsInGame.remove(0);
-//			}
-//		}
-//		user.hand.add(new Card("S13"));
-//		user.hand.add(new Card("S13"));
-//		dealer.hand.add(new Card("S13"));
-//		dealer.hand.add(new Card("S13"));
-		user.hit(deck.allCardsInGame.get(0));
-		deck.allCardsInGame.remove(0);
-		user.hit(deck.allCardsInGame.get(0));
-		deck.allCardsInGame.remove(0);
-		dealer.hit(deck.allCardsInGame.get(0));
-		deck.allCardsInGame.remove(0);
-		dealer.hit(deck.allCardsInGame.get(0));
-		deck.allCardsInGame.remove(0);
-		System.out.println(user.hand);
-		System.out.println(dealer.hand);
+		deck.dealOutHands(players);
 		displayHandsOnFrame(true);
 		System.out.println("display");
 	}

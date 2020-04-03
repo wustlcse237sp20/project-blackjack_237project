@@ -35,9 +35,15 @@ public class Deck {
 		java.util.Collections.shuffle(this.allCardsInGame);
 	}
 	
-	public void dealOutHands() {
-		
+	public void dealOutHands(ArrayList<Player> players) {
+		for(int i =0; i<2;i++) {
+		for (Player player : players) {
+			player.hand.add(this.allCardsInGame.get(0));
+			this.allCardsInGame.remove(0);
+		}
+		}
 	}
+	
 	
 	public boolean setNumberOfDecks(int numberDecksToUse) {
 		if(numberDecksToUse < 1 || numberDecksToUse > 8) {
