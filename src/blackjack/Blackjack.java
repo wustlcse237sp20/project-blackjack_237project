@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
 import java.awt.Color;
 
 import javax.swing.ImageIcon;
@@ -18,10 +19,15 @@ public class Blackjack implements ActionListener{
 	private JFrame frame;
 	private int frameHeight = 700;
 	private int frameWidth = 700;
+
 	private Deck deck = new Deck();
 	public Player dealer = new Player();
 	public Player user = new Player();
 	private ArrayList<Player> players = new ArrayList<Player>();
+	public boolean handOver = false;
+	public boolean handWon = false;
+
+
 	/**
 	 * Launch the application.
 	 */
@@ -52,7 +58,9 @@ public class Blackjack implements ActionListener{
 		runHand();
 	}
 	private void runHand() {
-		
+
+		handOver = false;
+		handWon = true;
 		deck.shuffle();
 		deck.dealOutHands(players);
 		displayHandsOnFrame(true);
@@ -67,27 +75,24 @@ public class Blackjack implements ActionListener{
 				deck.allCardsInGame.remove(0);
 				displayHandsOnFrame(true);
 				if(user.score > 21) {
-					//display loss text
-					runEndOfHandCleanup();
+					handOver = true;
+					handWon = false;
+					if(askToPlayNewHand()) {
+						runHand();
+					}
 				}
 				break;
 			case "Stand":
 				user.stand();
 				displayHandsOnFrame(false);
 				//display win/loss text
-				runEndOfHandCleanup();
+				handOver = true;
+				if(askToPlayNewHand()) {
+					runHand();
+				}
 				break;
 		}
 	}
-	private void runEndOfHandCleanup() {
-		int reply = JOptionPane.showConfirmDialog(null, "Play another hand?", "Blackjack", JOptionPane.YES_NO_OPTION);
-		if (reply == JOptionPane.YES_OPTION){
-			runHand();
-        } else {
-        	System.exit(0);
-        }
-	}
-	
 	private void initializeFrame() {		
 		frame = new JFrame();
 		frame.setResizable(false);
@@ -108,7 +113,6 @@ public class Blackjack implements ActionListener{
 		frame.getContentPane().add(dealerLabel);
 		frame.getContentPane().add(playerLabel);
 	}
-	
 	private void createInputButton(int xPosition, int yPosition, String commandToPerform) {
 		JButton newButton = new JButton(commandToPerform);
 		newButton.setBounds(xPosition, yPosition, 100, 30);
@@ -116,20 +120,12 @@ public class Blackjack implements ActionListener{
 		newButton.setActionCommand(commandToPerform);
 		frame.getContentPane().add(newButton);
 	}
-	
 	private void getGameParameters() {
-		String s = (String)JOptionPane.showInputDialog(frame, "How many decks to play with (up to 8)?", "Blackjack", JOptionPane.QUESTION_MESSAGE);
-		try {
-			while(true) {
-				if(s.length() == 1 && deck.setNumberOfDecks(s.charAt(0) - '0')) {
-					break;
-				} else {
-					JOptionPane.showMessageDialog(frame, "Please enter a number 1-8", "Error", JOptionPane.ERROR_MESSAGE);
-					s = (String)JOptionPane.showInputDialog(frame, "How many decks to play with (up to 8)?");
-				}
-			}
-		} catch (NullPointerException e) { //Cancel button or exit button pressed, so exit the program
-			System.exit(0);
+		int numberOfDecksToUse = askForNumberOfDecksToUse();
+		boolean deckNumberSet = deck.setNumberOfDecks(numberOfDecksToUse);
+		while(!deckNumberSet) {
+			JOptionPane.showMessageDialog(frame, "Please enter a number 1-8", "Error", JOptionPane.ERROR_MESSAGE);
+			deckNumberSet = deck.setNumberOfDecks(askForNumberOfDecksToUse());
 		}
 	}
 	
@@ -169,5 +165,34 @@ public class Blackjack implements ActionListener{
 		frame.getContentPane().revalidate();
 		frame.getContentPane().repaint();
 	}
-	
+
+	protected int askForNumberOfDecksToUse() {
+		try {
+			String numberOfDecksToUse = (String)JOptionPane.showInputDialog(
+													frame, 
+													"How many decks to play with (up to 8)?", 
+													"Blackjack", 
+													JOptionPane.QUESTION_MESSAGE);
+			while(numberOfDecksToUse.length() != 1) {
+				JOptionPane.showMessageDialog(frame, "Please enter a number 1-8", "Error", JOptionPane.ERROR_MESSAGE);
+				numberOfDecksToUse = (String)JOptionPane.showInputDialog(
+													frame, 
+													"How many decks to play with (up to 8)?", 
+													"Blackjack", 
+													JOptionPane.QUESTION_MESSAGE);
+			}
+			return numberOfDecksToUse.charAt(0) - '0';
+		} catch (NullPointerException e){
+			System.exit(0);
+		}
+		return 1;
+	}
+	protected boolean askToPlayNewHand() {
+		int reply = JOptionPane.showConfirmDialog(null, "Play another hand?", "Blackjack", JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION){
+			return true;
+        } else {
+        	return false;
+        }
+	}
 }
