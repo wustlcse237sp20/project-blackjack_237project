@@ -11,19 +11,19 @@ public class Deck {
 		this.cardsInADeck = new ArrayList<Card>();
 		this.allCardsInGame = new ArrayList<Card>();
 		for(int j=0;j<13;j++) {
-			String card = "H" + j; 
+			String card = j+ "H"; 
 			cardsInADeck.add(new Card(card));
 		}
 		for(int j=0;j<13;j++) {
-			String card = "C" + j; 
+			String card =j+ "C" ; 
 			cardsInADeck.add(new Card(card));
 		}
 		for(int j=0;j<13;j++) {
-			String card = "S" + j; 
+			String card = j+"S" ; 
 			cardsInADeck.add(new Card(card));
 		}
 		for(int j=0;j<13;j++) {
-			String card = "D" + j; 
+			String card = j+"D"; 
 			cardsInADeck.add(new Card(card));
 		}
 		for(Card card:cardsInADeck) {

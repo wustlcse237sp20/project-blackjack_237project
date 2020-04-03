@@ -8,6 +8,8 @@ public class Player {
 	
 	Player(){
 		hand = new ArrayList<Card>();
+		
+
 	}
 	
 	public void hit(Card card) {
