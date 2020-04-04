@@ -19,17 +19,16 @@ public class Blackjack implements ActionListener{
 	private JFrame frame;
 	private int frameHeight = 700;
 	private int frameWidth = 700;
-
-	private Deck deck = new Deck();
-	public Player dealer = new Player();
-	public Player user = new Player();
-	private ArrayList<Player> players = new ArrayList<Player>();
-	public boolean handOver = false;
-	public boolean handWon = false;
+	private Deck deck;
+	private int numberOfPlayers = 2;
+	private ArrayList<Player> players = new ArrayList<Player>(); //first player in list is the dealer, second is the user, all rest are computer controlled
+	private boolean handOver = false;
+	private boolean handWon = false;
+	private boolean handPushed = false;
 
 
 	/**
-	 * Launch the application.
+	 * Launches the application.
 	 */
 	public static void main(String[] args) {
 		
@@ -47,125 +46,26 @@ public class Blackjack implements ActionListener{
 	}
 
 	/**
-	 * Setup the window and run the game
+	 * Sets uo the application window and run the game
 	 */
 	public Blackjack() {
-		players.add(user);
-		players.add(dealer);
+		setDeckSize();
+		for(int i = 0; i < numberOfPlayers + 1; i++) {
+			players.add(new Player());
+		}
 		initializeFrame();
-		initializeInput();
-		getGameParameters();
-		runHand();
+		initializeGUI();
+		playAHand();
 	}
-	private void runHand() {
-
-		handOver = false;
-		handWon = true;
-		deck.shuffle();
-		deck.dealOutHands(players);
-		displayHandsOnFrame(true);
-		System.out.println("display");
-	}
-	public void actionPerformed(ActionEvent e) {
-		String action = e.getActionCommand();
-		System.out.println(action);
-		switch(action) {
-			case "Hit":
-				user.hit(deck.allCardsInGame.get(0));
-				deck.allCardsInGame.remove(0);
-				displayHandsOnFrame(true);
-				if(user.score > 21) {
-					handOver = true;
-					handWon = false;
-					if(askToPlayNewHand()) {
-						runHand();
-					}
-				}
-				break;
-			case "Stand":
-				user.stand();
-				displayHandsOnFrame(false);
-				//display win/loss text
-				handOver = true;
-				if(askToPlayNewHand()) {
-					runHand();
-				}
-				break;
-		}
-	}
-	private void initializeFrame() {		
-		frame = new JFrame();
-		frame.setResizable(false);
-		frame.getContentPane().setBackground(new Color(0, 128, 0));
-		frame.getContentPane().setLayout(null);
-		frame.setBounds(0, 0, frameWidth, frameHeight);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
-	}
-	private void initializeInput() {
-		createInputButton(frameWidth/2 - 100, frameHeight - 50, "Hit");
-		createInputButton(frameWidth/2, frameHeight - 50,"Stand");
-		JLabel dealerLabel = new JLabel("Dealer");
-		JLabel playerLabel = new JLabel("Your Hand");
-		dealerLabel.setBounds(frameWidth/2-20, 150, 40, 30);
-		dealerLabel.setForeground(new Color(255,255,255));
-		playerLabel.setBounds(frameWidth/2-35, frameHeight - 225, 70, 30);
-		playerLabel.setForeground(new Color(255,255,255));
-		frame.getContentPane().add(dealerLabel);
-		frame.getContentPane().add(playerLabel);
-	}
-	private void createInputButton(int xPosition, int yPosition, String commandToPerform) {
-		JButton newButton = new JButton(commandToPerform);
-		newButton.setBounds(xPosition, yPosition, 100, 30);
-		newButton.addActionListener(this);
-		newButton.setActionCommand(commandToPerform);
-		frame.getContentPane().add(newButton);
-	}
-	private void getGameParameters() {
-		int numberOfDecksToUse = askForNumberOfDecksToUse();
-		boolean deckNumberSet = deck.setNumberOfDecks(numberOfDecksToUse);
-		while(!deckNumberSet) {
+	
+	private void setDeckSize() {
+		int numberOfSingleDecksToUse = askForNumberOfDecksToUse();
+		while(numberOfSingleDecksToUse < 1 || numberOfSingleDecksToUse > 8) {
 			JOptionPane.showMessageDialog(frame, "Please enter a number 1-8", "Error", JOptionPane.ERROR_MESSAGE);
-			deckNumberSet = deck.setNumberOfDecks(askForNumberOfDecksToUse());
+			numberOfSingleDecksToUse = askForNumberOfDecksToUse();
 		}
+		deck = new Deck(numberOfSingleDecksToUse);
 	}
-	
-	
-	private void displayHandsOnFrame(boolean coverDealerCard) {
-		clearHandsFromFrame();
-		addPlayerHandToFrame(user.hand, frameWidth/2-40, frameHeight-200);
-		if(coverDealerCard) {
-			addDealerHandToFrame(dealer.hand, frameWidth/2-40, 15);
-		} else {
-			addPlayerHandToFrame(dealer.hand, frameWidth/2-40, 15);
-		}
-	}
-	private void addPlayerHandToFrame(ArrayList<Card> handToDisplay, int xPositionStart, int yPosition) {
-		for(int i = handToDisplay.size() - 1; i >= 0; i--) {
-			addCardToFrame(handToDisplay.get(i).cardImageFilePath, xPositionStart-(handToDisplay.size()-i-1)*15, yPosition);
-		}
-	}
-	private void addDealerHandToFrame(ArrayList<Card> handToDisplay, int xPositionStart, int yPosition) {
-		for(int i = handToDisplay.size() - 1; i >= 0; i--) {
-			String imageFileName = handToDisplay.get(i).cardImageFilePath;
-			if(i == handToDisplay.size() - 1) {
-				imageFileName = "/back.png";
-			}
-			addCardToFrame(imageFileName, xPositionStart-(handToDisplay.size()-i-1)*15, yPosition);
-		}
-	}
-	private void addCardToFrame(String imageFileToBeDisplayed, int xPosition, int yPosition) {
-		JLabel cardToDisplay = new JLabel();
-	    cardToDisplay.setIcon(new ImageIcon(this.getClass().getResource(imageFileToBeDisplayed)));
-	    cardToDisplay.setBounds(xPosition, yPosition, 94, 216);
-		frame.getContentPane().add(cardToDisplay);
-	}
-	private void clearHandsFromFrame() {
-		frame.getContentPane().removeAll();
-		initializeInput();
-		frame.getContentPane().revalidate();
-		frame.getContentPane().repaint();
-	}
-
 	protected int askForNumberOfDecksToUse() {
 		try {
 			String numberOfDecksToUse = (String)JOptionPane.showInputDialog(
@@ -187,6 +87,186 @@ public class Blackjack implements ActionListener{
 		}
 		return 1;
 	}
+	/**
+	 * Sets up the frame object for the GUI
+	 */
+	private void initializeFrame() {		
+		frame = new JFrame();
+		frame.setResizable(false);
+		frame.getContentPane().setBackground(new Color(0, 128, 0));
+		frame.getContentPane().setLayout(null);
+		frame.setBounds(0, 0, frameWidth, frameHeight);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+	}
+	/**
+	 * Adds all the buttons and text to the GUI
+	 */
+	private void initializeGUI() {
+		createInputButton(frameWidth/2 - 110, frameHeight - 50, "Hit");
+		createInputButton(frameWidth/2, frameHeight - 50,"Stand");
+		createInputButton(frameWidth/2 - 220, frameHeight - 50, "Split");
+		createInputButton(frameWidth/2 + 110, frameHeight - 50, "Double Down");
+		createTextLabel(150, 40, "Dealer");
+		createTextLabel(frameHeight - 225, 70, "Your Hand");
+		createTextLabel(frameHeight - 240, 60, "Score: " + String.valueOf(getUser().getPlayerScore()));
+		createTextLabel(frameHeight - 255, 60, "Bet: $25");
+		createTextLabel(frameHeight - 285, 85, "Chips: $1000");
+	}
+	private void createInputButton(int xPosition, int yPosition, String commandToPerform) {
+		JButton newButton = new JButton(commandToPerform);
+		newButton.setBounds(xPosition, yPosition, 110, 30);
+		newButton.addActionListener(this);
+		newButton.setActionCommand(commandToPerform);
+		frame.getContentPane().add(newButton);
+	}
+	private void createTextLabel(int yPosition, int width, String labelText) {
+		JLabel labelToCreate = new JLabel(labelText);
+		labelToCreate.setBounds(frameWidth/2 - width/2, yPosition, width, 30);
+		labelToCreate.setForeground(new Color(255,255,255));
+		frame.getContentPane().add(labelToCreate);
+	}
+	
+	/**
+	 * Deals out a hand to the players and displays the appropriate cards on the GUI
+	 */
+	private void playAHand() {
+		handOver = false;
+		handWon = false;
+		deck.dealOutHands(players);
+		displayHandsOnFrame(true);
+	}
+	/**
+	 * Adds images to the GUI for the cards in each player's hand, optionallt hiding one of the dealer's cards
+	 * @param coverDealerCard
+	 */
+	private void displayHandsOnFrame(boolean coverDealerCard) {
+		clearHandsFromFrame();
+		addPlayerHandToFrame(getUser().getHand(), frameWidth/2-40, frameHeight-200);
+		if(coverDealerCard) {
+			addDealerHandToFrame(getDealer().getHand(), frameWidth/2-40, 15);
+		} else {
+			addPlayerHandToFrame(getDealer().getHand(), frameWidth/2-40, 15);
+		}
+	}
+	/**
+	 * Removes the images for all player's hands from the GUI
+	 */
+	private void clearHandsFromFrame() {
+		frame.getContentPane().removeAll();
+		initializeGUI();
+		frame.getContentPane().revalidate();
+		frame.getContentPane().repaint();
+	}
+	/**
+	 * Takes the ArrayList of cards representing a player's hand and displays it face up on the GUI at the supplied x and y
+	 * positions.
+	 * @param handToDisplay the player's hand of cards
+	 * @param xPositionStart the x poistion on the GUI to start displaying the cards
+	 * @param yPosition the y position on the GUI to diplay the cards
+	 */
+	private void addPlayerHandToFrame(ArrayList<Card> handToDisplay, int xPositionStart, int yPosition) {
+		for(int i = handToDisplay.size() - 1; i >= 0; i--) {
+			addCardToFrame(handToDisplay.get(i).cardImageFilePath, xPositionStart-(handToDisplay.size()-i-1)*15, yPosition);
+		}
+	}
+	/**
+	 * Takes the ArrayList of cards representing the dealer's hand and displays it on the GUI at the supplied x and y
+	 * positions, flipping one of the cards face down.
+	 * @param handToDisplay the dealer's hand of cards
+	 * @param xPositionStart the x poistion on the GUI to start displaying the cards
+	 * @param yPosition the y position on the GUI to diplay the cards
+	 */
+	private void addDealerHandToFrame(ArrayList<Card> handToDisplay, int xPositionStart, int yPosition) {
+		for(int i = handToDisplay.size() - 1; i >= 0; i--) {
+			String imageFileName = handToDisplay.get(i).cardImageFilePath;
+			if(i == handToDisplay.size() - 1) {
+				imageFileName = "/back.png";
+			}
+			addCardToFrame(imageFileName, xPositionStart-(handToDisplay.size()-i-1)*15, yPosition);
+		}
+	}
+	/**
+	 * Adds the image file for a card at the supplied path to the GUI frame at the provided position
+	 * @param imageFileToBeDisplayed the path to the image file to display (i.e. /13S.png, see Card class for convention)
+	 * @param xPosition
+	 * @param yPosition
+	 */
+	private void addCardToFrame(String imageFileToBeDisplayed, int xPosition, int yPosition) {
+		JLabel cardToDisplay = new JLabel();
+	    cardToDisplay.setIcon(new ImageIcon(this.getClass().getResource(imageFileToBeDisplayed)));
+	    cardToDisplay.setBounds(xPosition, yPosition, 94, 216);
+		frame.getContentPane().add(cardToDisplay);
+	}
+	
+	/**
+	 * Handles the press of any buttons on the GUI and the corresponding game actions
+	 */
+	public void actionPerformed(ActionEvent e) {
+		String action = e.getActionCommand();
+		switch(action) {
+			case "Hit":
+				getUser().hit(deck);
+				displayHandsOnFrame(true);
+				if(getUser().getPlayerScore() > 21) {
+					handWon = false;
+					handOver = true;
+					displayHandsOnFrame(false);
+					displayHandOverText();
+					if(askToPlayNewHand()) {
+						playAHand();
+					}
+				}
+				break;
+			case "Stand":
+				getDealer().playDealersHand();
+				determineWinnerOfHand();
+				handOver = true;
+				displayHandsOnFrame(false);
+				displayHandOverText();
+				if(askToPlayNewHand()) {
+					playAHand();
+				}
+				break;
+		}
+	}
+	/**
+	 * Determines based on the player's and dealers score/hand if the player won the hand
+	 */
+	private void determineWinnerOfHand() {
+		if(getUser().getPlayerScore() > getDealer().getPlayerScore() || getDealer().getPlayerScore() > 21) { //if dealer busts or has lower score
+			handWon = true;
+		}
+		if(getUser().getPlayerScore() < getDealer().getPlayerScore()) {
+			handWon = false;
+		}
+		if(getUser().getPlayerScore() == getDealer().getPlayerScore()) { //if dealer and player have same score
+			if(getDealer().doesPlayerHaveBlackjack() && !getUser().doesPlayerHaveBlackjack()) { //player loses if dealer has blackjack but player doesnt
+				handWon = false;
+			} else if(!getDealer().doesPlayerHaveBlackjack() && getUser().doesPlayerHaveBlackjack()){ //player wins if they have blackjack but dealer doesn't
+				handWon = true;
+			} else {
+				handPushed = true;
+			}
+		}
+	}
+	/**
+	 * Displays a notification in the center of the GUI norifying the player the outcome of the hand
+	 */
+	private void displayHandOverText() {
+		createTextLabel(170, 60,"Score: " + String.valueOf(getDealer().getPlayerScore()));
+		if(handWon) {
+			//display win text
+			createTextLabel(frameHeight/2-15, 65, "Hand Won");
+		} else {
+			if(handPushed) {
+				//display draw text
+				createTextLabel(frameHeight/2-15, 85, "Hand Pushed");
+			} else {
+				//diplay draw text
+				createTextLabel(frameHeight/2-15, 65, "Hand Lost");
+			}
+		}
+	}
 	protected boolean askToPlayNewHand() {
 		int reply = JOptionPane.showConfirmDialog(null, "Play another hand?", "Blackjack", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION){
@@ -195,4 +275,20 @@ public class Blackjack implements ActionListener{
         	return false;
         }
 	}
-}
+	
+	
+	public Player getDealer(){
+		return this.players.get(0);
+	}
+	public Player getUser(){
+		return this.players.get(1);
+	}
+	public boolean isHandOver() {
+		return this.handOver;
+	}
+	public boolean isHandWon() {
+		return this.handWon;
+	}
+	public boolean isHandPush() {
+		return this.handPushed;
+	}}
