@@ -22,4 +22,15 @@
   An ace is only treated as having a value of 11, but it should alsobe able to be scored as a 1. <br/>
   Every game goes through the same sequence of cards delt, and the cards are unshuffled. <br/>
 
-## Command to launch the game:<br/>
+## Instructions to launch the game:<br/>
+
+###MacOS or Linux:
+Open a terminal window and navigate to the root directory of the project
+run the command: ./MacOSBlackjack.sh
+
+###Windows
+Because the game requires a GUI (it is not headless), on windows it must be launched from the windows command prompt not linux subsystem for windows:
+Ensure the latest JDK is installed on Windows (https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)
+Open a windows command prompt (windows key + r, type in cmd, click ok)
+Navigate to the root directory of the repository using: cd <path\to\file>
+run the command: WinBlackjack.bat
