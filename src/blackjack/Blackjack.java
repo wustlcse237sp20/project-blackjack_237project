@@ -92,7 +92,7 @@ public class Blackjack implements ActionListener{
 	 */
 	private void initializeFrame() {		
 		frame = new JFrame();
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.getContentPane().setBackground(new Color(0, 128, 0));
 		frame.getContentPane().setLayout(null);
 		frame.setBounds(0, 0, frameWidth, frameHeight);
