@@ -24,13 +24,13 @@
 
 ## Instructions to launch the game:<br/>
 
-###MacOS or Linux:
-Open a terminal window and navigate to the root directory of the project
-run the command: ./MacOSBlackjack.sh
+###MacOS or Linux:<br/>
+Open a terminal window and navigate to the root directory of the project<br/>
+run the command: ./MacOSBlackjack.sh<br/>
 
-###Windows
-Because the game requires a GUI (it is not headless), on windows it must be launched from the windows command prompt not linux subsystem for windows:
-Ensure the latest JDK is installed on Windows (https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)
-Open a windows command prompt (windows key + r, type in cmd, click ok)
-Navigate to the root directory of the repository using: cd <path\to\file>
-run the command: WinBlackjack.bat
+###Windows<br/>
+Because the game requires a GUI (it is not headless), on windows it must be launched from the windows command prompt not linux subsystem for windows:<br/>
+Ensure the latest JDK is installed on Windows (https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)<br/>
+Open a windows command prompt (windows key + r, type in cmd, click ok)<br/>
+Navigate to the root directory of the repository using: cd <path\to\file><br/>
+run the command: WinBlackjack.bat<br/>
