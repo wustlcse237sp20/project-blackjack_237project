@@ -20,6 +20,6 @@
   The double down, split buttons on the GUI are currently placeholders that do nothing.<br/>
   The bet and chip totals do not update based on bets placed on a hand. <br/>
   An ace is only treated as having a value of 11, but it should alsobe able to be scored as a 1. <br/>
-  Every game goes through the same sequence of cards delt. <br/>
+  Every game goes through the same sequence of cards delt, and the cards are unshuffled. <br/>
 
 ## Command to launch the game:<br/>
