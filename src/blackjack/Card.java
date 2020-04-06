@@ -1,11 +1,16 @@
 package blackjack;
 
 public class Card {
-	// 1-10, J = 11, Q = 12, K = 13 dollowed by H = hearts, S = spades, C = clubs, D = diamonds
+	//Shorthand for cards in file names for images is: 
+	//1-10, J = 11, Q = 12, K = 13 followed by H = hearts, S = spades, C = clubs, D = diamonds
+	//ex. 1S = ace/spades, 4D = 4/diamonds, 13H = king/hearts, etc
 	public String cardImageFilePath; 
-	public int value; //the score value of the card
+	//Score values of each card:
+	//A = 11 (by default, score changed to 1 in Player class as needed), 2-10 = number on card, J/Q/K = 10
+	public int value; 
 	
-	Card(String cardNumberAndSuit){
-		cardImageFilePath = "/" + cardNumberAndSuit + ".png"; //ex. 1S = ace/spades, 4D = 4/diamonds, 13H = king/hearts, etc
+	public Card(String cardNumberAndSuit, int value){
+		cardImageFilePath = "/" + cardNumberAndSuit + ".png";
+		this.value = value;
 	}
 }
