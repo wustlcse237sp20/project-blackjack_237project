@@ -24,11 +24,11 @@
 
 ## Instructions to launch the game:<br/>
 
-###MacOS or Linux:<br/>
+### MacOS or Linux:<br/>
 Open a terminal window and navigate to the root directory of the project<br/>
 run the command: ./MacOSBlackjack.sh<br/>
 
-###Windows<br/>
+### Windows<br/>
 Because the game requires a GUI (it is not headless), on windows it must be launched from the windows command prompt not linux subsystem for windows:<br/>
 Ensure the latest JDK is installed on Windows (https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)<br/>
 Open a windows command prompt (windows key + r, type in cmd, click ok)<br/>
