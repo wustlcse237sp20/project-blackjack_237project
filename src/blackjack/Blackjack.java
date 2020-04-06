@@ -92,7 +92,7 @@ public class Blackjack implements ActionListener{
 	 */
 	private void initializeFrame() {		
 		frame = new JFrame();
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.getContentPane().setBackground(new Color(0, 128, 0));
 		frame.getContentPane().setLayout(null);
 		frame.setBounds(0, 0, frameWidth, frameHeight);
@@ -102,15 +102,15 @@ public class Blackjack implements ActionListener{
 	 * Adds all the buttons and text to the GUI
 	 */
 	private void initializeGUI() {
-		createInputButton(frameWidth/2 - 110, frameHeight - 50, "Hit");
-		createInputButton(frameWidth/2, frameHeight - 50,"Stand");
-		createInputButton(frameWidth/2 - 220, frameHeight - 50, "Split");
-		createInputButton(frameWidth/2 + 110, frameHeight - 50, "Double Down");
+		createInputButton(frameWidth/2 - 110, frameHeight - 70, "Hit");
+		createInputButton(frameWidth/2, frameHeight - 70,"Stand");
+		createInputButton(frameWidth/2 - 220, frameHeight - 70, "Split");
+		createInputButton(frameWidth/2 + 110, frameHeight - 70, "Double Down");
 		createTextLabel(150, 40, "Dealer");
-		createTextLabel(frameHeight - 225, 70, "Your Hand");
-		createTextLabel(frameHeight - 240, 60, "Score: " + String.valueOf(getUser().getPlayerScore()));
-		createTextLabel(frameHeight - 255, 60, "Bet: $25");
-		createTextLabel(frameHeight - 285, 85, "Chips: $1000");
+		createTextLabel(frameHeight - 245, 70, "Your Hand");
+		createTextLabel(frameHeight - 260, 60, "Score: " + String.valueOf(getUser().getPlayerScore()));
+		createTextLabel(frameHeight - 275, 60, "Bet: $25");
+		createTextLabel(frameHeight - 305, 85, "Chips: $1000");
 	}
 	private void createInputButton(int xPosition, int yPosition, String commandToPerform) {
 		JButton newButton = new JButton(commandToPerform);
@@ -141,7 +141,7 @@ public class Blackjack implements ActionListener{
 	 */
 	private void displayHandsOnFrame(boolean coverDealerCard) {
 		clearHandsFromFrame();
-		addPlayerHandToFrame(getUser().getHand(), frameWidth/2-40, frameHeight-200);
+		addPlayerHandToFrame(getUser().getHand(), frameWidth/2-40, frameHeight-220);
 		if(coverDealerCard) {
 			addDealerHandToFrame(getDealer().getHand(), frameWidth/2-40, 15);
 		} else {
