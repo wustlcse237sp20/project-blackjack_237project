@@ -25,19 +25,18 @@
   An ace is only treated as having a value of 11, but it should alsobe able to be scored as a 1. <br/>
   Every game goes through the same sequence of cards delt, and the cards are unshuffled. <br/>
 
-## Instructions to launch the game:<br/>
+## Instructions to play the game:<br/>
 
 ### MacOS or Linux:<br/>
-Ensure the latest JDK is installed (https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)<br/>
-<br/>
 Open a terminal window and navigate to the root directory of the project<br/>
 run the command: ./MacOSBlackjack.sh<br/>
 
 ### Windows<br/>
 Because the game requires a GUI (it is not headless), on windows it must be launched from the windows command prompt not linux subsystem for windows:<br/>
-Ensure the latest JDK is installed on Windows (https://www.oracle.com/java/technologies/javase-jdk14-downloads.html)<br/>
-<br/>
+
 Open a windows command prompt (windows key + r, type in cmd, click ok)<br/>
 Navigate to the root directory of the repository using: cd <path\to\file><br/>
 run the command: WinBlackjack.bat<br/>
 (ALternatively, just double click the .bat file in the project directory from the file browser)<br/>
+
+After launching the game, follow the prompts to set up the parameters for the game (including deck size, and starting number of chips). Then play a hand using the hit and stand buttons that appear at the bottom of the screen displaying the delt cards (it is possible that these buttons may have previously been appearing off the edge of the frame. This seems to have been fixed, but if you can't see any buttons, try resizing the window to be larger by dragging on the lower edge).
