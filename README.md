@@ -12,18 +12,25 @@
 ## Implemented stories (Iteration 2):<br/>
   A player should be able to choose to start the game with a certain number of chips. <br/>
   A player should be able to bet on each hand and recieve winnings based on payout rules.<br/>
+  A player should be able to split their hand.<br/>
 
 ## Stories to implement for Iteration 2:<br/>
   A player should be able to double down on their hand.<br/>
-  A player should be able to split their hand.<br/>
   A dealer should be able to complete their hand based on hitting rules for the dealer.<br/>
   
  ## Stories to implement for Iteration 3:<br/>
+  A player should be able to select the number of computer players to play with.<br/>
+  Computer players should be able to play their hands in order according to randomly selected hit/stand rules.<br/>
+  A player should be able to have the option to have card counting tools displayed on the screen while playing.<br/>
   
 ## Features that don't work:<br/>
-  The double down, split buttons on the GUI are currently placeholders that do nothing.<br/>
+  The double down button on the GUI is currently a placeholder that does nothing.<br/>
   An ace is only treated as having a value of 11, but it should alsobe able to be scored as a 1. <br/>
   Every game goes through the same sequence of cards delt, and the cards are unshuffled. <br/>
+  Receiving a hand of blackjack does not result in proper payout <br/>
+  
+  The split button should only appear if the starting hand contains a pair<br/>
+  
 
 ## Instructions to launch the game:<br/>
 
