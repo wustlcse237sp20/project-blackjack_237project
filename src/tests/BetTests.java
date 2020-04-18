@@ -57,10 +57,10 @@ class BetTests {
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : winningHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
 		assertEquals(200, testGame.getUser().getNumberOfChips());
@@ -83,10 +83,10 @@ class BetTests {
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : winningHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
 		assertEquals(0, testGame.getUser().getNumberOfChips());
@@ -105,8 +105,8 @@ class BetTests {
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : pushHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
 		assertEquals(100, testGame.getUser().getNumberOfChips());
@@ -130,10 +130,10 @@ class BetTests {
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
 		assertEquals(250, testGame.getUser().getNumberOfChips());

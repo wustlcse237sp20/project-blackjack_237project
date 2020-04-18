@@ -4,16 +4,16 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 
 public class Blackjack {
-	private GUI userInterface;
+	public GUI userInterface;
 	private int frameHeight = 800;
 	private int frameWidth = 800;
 	
 	protected Deck deck;
 	private int numberOfPlayers = 1; //number of players (not including the dealer)
 	private ArrayList<Player> players = new ArrayList<Player>(); //first player in list is the dealer, second is the user, all rest are computer controlled
-	private boolean handOver = false;
-	private boolean handWon = false;
-	private boolean handPushed = false;
+	private boolean handsOver = false;
+	private ArrayList<Boolean> handsWon;
+	private ArrayList<Boolean> handsPushed;
 
 	/**
 	 * Launches the application.
@@ -35,6 +35,8 @@ public class Blackjack {
 	 * Sets up the application window and runs the game
 	 */
 	public Blackjack() {
+		handsWon = new ArrayList<Boolean>();
+		handsPushed = new ArrayList<Boolean>();
 		userInterface = new GUI(frameHeight, frameWidth, this);
 		for(int i = 0; i < numberOfPlayers + 1; i++) {
 			players.add(new Player());
@@ -67,9 +69,10 @@ public class Blackjack {
 	 * Deals out a hand to the players and displays the appropriate cards on the GUI
 	 */
 	private void playAHand() {
-		handOver = false;
-		handWon = false;
-		if(getUser().getNumberOfChips() == 0) {
+		handsOver = false;
+		handsWon.clear();
+		handsPushed.clear();
+		if(getUserNumberOfChips() == 0) {
 			userInterface.showChipsGoneMessage();
 			setChipAmount();
 		}
@@ -79,7 +82,7 @@ public class Blackjack {
 	}
 	protected void setBetAmount() {
 		int betAmount = userInterface.askForBet();
-		while(betAmount < 1 || betAmount > getUser().getNumberOfChips()) {
+		while(betAmount < 1 || betAmount > getUserNumberOfChips()) {
 			userInterface.showBetAmountError();
 			betAmount = userInterface.askForBet();
 		}
@@ -87,40 +90,47 @@ public class Blackjack {
 		getUser().subtractChips(betAmount);
 	}
 	
-	/**
-	 * Determines based on the player's and dealers score/hand if the player won the hand
-	 */
-	private void determineWinnerOfHand() {
-		if(getUserScore() > getDealerScore() || getDealerScore() > 21) { //if dealer busts or has lower score
-			handWon = true;
-			if(getUser().doesPlayerHaveBlackjack()) {
-				getUser().addChips(2.5*getUser().getBet());
-			} else {
-				getUser().addChips(2*getUser().getBet());
-			}
-		}
-		if(getUserScore() < getDealerScore()) {
-			handWon = false;
-		}
-		if(getUserScore() == getDealerScore()) { //if dealer and player have same score
-			if(getDealer().doesPlayerHaveBlackjack() && !getUser().doesPlayerHaveBlackjack()) { //player loses if dealer has blackjack but player doesnt
-				handWon = false;
-			} else if(!getDealer().doesPlayerHaveBlackjack() && getUser().doesPlayerHaveBlackjack()){ //player wins if they have blackjack but dealer doesn't
-				handWon = true;
-				getUser().addChips(2.5*getUser().getBet());
-			} else {
-				handPushed = true;
-				getUser().addChips(getUser().getBet());
-			}
-		}
-	}
-	
 	public void handleHitPress() {
-		getUser().hit(deck);
-		userInterface.displayHandsOnFrame(true);
-		if(getUserScore() > 21) {
-			handWon = false;
-			handOver = true;
+		if(userInterface.getControllingHandNumber() == 0) {
+			getUser().hit(deck, 0);
+			userInterface.displayHandsOnFrame(true);
+			if(getUserHandScore(getUserHands().get(0)) > 21) {
+				determineWinnerOfHand();
+				userInterface.displayHandsOnFrame(false);
+				finishHand();
+				if(startNewHand()) {
+					playAHand();
+				}
+			}
+		} else {
+			getUser().hit(deck, userInterface.getControllingHandNumber()-1);
+			userInterface.displayHandsOnFrame(true);
+			if(getUserHandScore(getUserHands().get(userInterface.getControllingHandNumber()-1)) > 21) {
+				if(userInterface.getControllingHandNumber() == 2) {
+					userInterface.incrementControllingHandNumber();
+					determineWinnerOfHand();
+					userInterface.displayHandsOnFrame(false);
+					finishHand();
+					if(startNewHand()) {
+						playAHand();
+					}
+				} else {
+					userInterface.incrementControllingHandNumber();
+					userInterface.displayHandsOnFrame(true);
+				}
+			}
+		}
+	}	
+	public void handleStandPress() {
+		if(userInterface.getControllingHandNumber() == 1) {
+			userInterface.incrementControllingHandNumber();
+			userInterface.displayHandsOnFrame(true);
+		} else {
+			if(userInterface.getControllingHandNumber() == 2) {
+				userInterface.incrementControllingHandNumber();
+			}
+			getDealer().playDealersHand();
+			determineWinnerOfHand();
 			userInterface.displayHandsOnFrame(false);
 			finishHand();
 			if(startNewHand()) {
@@ -128,16 +138,56 @@ public class Blackjack {
 			}
 		}
 	}
+	public void handleSplitPress() {
+		getUser().splitHands();
+		getUser().hit(deck, 0);
+		getUser().hit(deck, 1);
+		getUser().subtractChips((int)getUser().getBet());
+		userInterface.displayHandsOnFrame(true);
+	}
+	public void handleDoubleDownPress() {
+		//TODO:Implement double down procedure (double users bet and hit once, followed by standing)
+	}
 	
-	public void handleStandPress() {
-		getDealer().playDealersHand();
-		determineWinnerOfHand();
-		handOver = true;
-		userInterface.displayHandsOnFrame(false);
-		finishHand();
-		if(startNewHand()) {
-			playAHand();
+	/**
+	 * Determines based on the player's and dealers score/hand if the player won the hand and pays out bets accordingly
+	 */
+	private void determineWinnerOfHand() {
+		for(Hand handToCheck : getUser().getHands()) {
+			if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
+				if(handToCheck.getScore() > getDealerScore() || getDealerScore() > 21) { //if dealer busts or has lower score
+					handsWon.add(true);
+					handsPushed.add(false);
+					if(handToCheck.doesHandHaveBlackjack()) { //check for BJ chip payout
+						getUser().addChips(2.5*getUserBet());
+					} else {
+						getUser().addChips(2*getUserBet());
+					}
+				}
+				if(handToCheck.getScore() < getDealerScore()) {
+					handsWon.add(false);
+					handsPushed.add(false);
+				}
+				if(handToCheck.getScore() == getDealerScore()) { //if dealer and player have same score
+					if(getDealerHands().get(0).doesHandHaveBlackjack() && !handToCheck.doesHandHaveBlackjack()) { //player loses if dealer has blackjack but player doesnt
+						handsWon.add(false);
+						handsPushed.add(false);
+					} else if(!getDealerHands().get(0).doesHandHaveBlackjack() && handToCheck.doesHandHaveBlackjack()){ //player wins if they have blackjack but dealer doesn't
+						handsWon.add(true);
+						handsPushed.add(false);
+						getUser().addChips(2.5*getUserBet());
+					} else {
+						handsWon.add(false);
+						handsPushed.add(true);
+						getUser().addChips(getUserBet());
+					}
+				}
+			} else { //user busted hand, auto loss
+				handsWon.add(false);
+				handsPushed.add(false);
+			}
 		}
+		handsOver = true;
 	}
 	
 	/**
@@ -152,17 +202,34 @@ public class Blackjack {
 	 * Displays a notification in the center of the GUI norifying the player the outcome of the hand
 	 */
 	private void finishHand() {
-		userInterface.createTextLabel(170, 60,"Score: " + String.valueOf(getDealerScore()));
-		if(handWon) {
-			//display win text
-			userInterface.createTextLabel(frameHeight/2-15, 65, "Hand Won");
+		userInterface.createTextLabel(frameWidth/2 - 30, 170, 60,"Score: " + String.valueOf(getDealerScore()));
+		if(handsWon.size() > 1) {
+			for(int i = 0; i < handsWon.size(); i++) {
+				if(handsWon.get(i)) {
+					//display win text
+					userInterface.createTextLabel(frameWidth/2 - 125+i*175, frameHeight-365, 65, "Hand Won");
+				} else {
+					if(handsPushed.get(i)) {
+						//display draw text
+						userInterface.createTextLabel(frameWidth/2 - 125+i*175, frameHeight-365, 85, "Hand Pushed");
+					} else {
+						//diplay loss text
+						userInterface.createTextLabel(frameWidth/2 - 125+i*175, frameHeight-365, 65, "Hand Lost");
+					}
+				}
+			}
 		} else {
-			if(handPushed) {
-				//display draw text
-				userInterface.createTextLabel(frameHeight/2-15, 85, "Hand Pushed");
+			if(handsWon.get(0)) {
+				//display win text
+				userInterface.createTextLabel(frameWidth/2 - 32, frameHeight-365, 65, "Hand Won");
 			} else {
-				//diplay draw text
-				userInterface.createTextLabel(frameHeight/2-15, 65, "Hand Lost");
+				if(handsPushed.get(0)) {
+					//display draw text
+					userInterface.createTextLabel(frameWidth/2 - 42, frameHeight-365, 85, "Hand Pushed");
+				} else {
+					//diplay loss text
+					userInterface.createTextLabel(frameWidth/2 - 32, frameHeight-365, 65, "Hand Lost");
+				}
 			}
 		}
 	}
@@ -173,19 +240,34 @@ public class Blackjack {
 	public Player getUser() {
 		return players.get(1);
 	}
+	public double getUserBet() {
+		return getUser().getBet();
+	}
+	public double getUserNumberOfChips() {
+		return getUser().getNumberOfChips();
+	}
+	public ArrayList<Hand> getUserHands(){
+		return getUser().getHands();
+	}
+	public ArrayList<Hand> getDealerHands(){
+		return getDealer().getHands();
+	}
+	public Hand getSingleUserHand(int handToGet) {
+		return getUser().getSingleHand(handToGet);
+	}
 	public int getDealerScore(){
-		return players.get(0).getPlayerScore();
+		return getDealerHands().get(0).getScore();
 	}
-	public int getUserScore(){
-		return players.get(1).getPlayerScore();
+	public int getUserHandScore(Hand handToGetScoreOf){
+		return handToGetScoreOf.getScore();
 	}
-	public boolean isHandOver() {
-		return handOver;
+	public boolean areUserHandsOver() {
+		return handsOver;
 	}
-	public boolean isHandWon() {
-		return handWon;
+	public boolean isHandWon(int handToCheck) {
+		return handsWon.get(handToCheck);
 	}
-	public boolean isHandPush() {
-		return handPushed;
+	public boolean isHandPushed(int handToCheck) {
+		return handsPushed.get(handToCheck);
 	}
 }
