@@ -44,12 +44,12 @@ class GameTests{
 	void testBustOnHit() {
 		JButton mockButton = new JButton();
 		ActionEvent mockPressHitButton = new ActionEvent(mockButton, ActionEvent.ACTION_PERFORMED,"Hit");
-		while(testGame.getUser().getPlayerScore() < 21) {
+		while(testGame.getSingleUserHand(0).getScore() < 21) {
 			userInterface.actionPerformed(mockPressHitButton);
 		}
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), false);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 	
 	@Test
@@ -65,13 +65,13 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : pushHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), true);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), true);
 	}
 	
 	@Test
@@ -86,13 +86,13 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), true);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), true);
 	}
 	
 	@Test
@@ -113,15 +113,15 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : winningHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), true);
-		assertEquals(testGame.isHandPush(), false);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), true);
+		assertEquals(testGame.isHandPushed(0), false);
 		
 	}
 	
@@ -143,15 +143,15 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), true);
-		assertEquals(testGame.isHandPush(), false);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), true);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 	
 	@Test
@@ -172,15 +172,15 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : winningHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), false);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 	
 	@Test
@@ -201,14 +201,14 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		userInterface.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), false);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 }

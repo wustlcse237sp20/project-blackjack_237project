@@ -23,10 +23,18 @@ class HandTests {
 	}
 	
 	@Test
-	void testAddingAnAceToAHand() {
+	void testChangingScoreOfAces() {
+		fail("Not yet implemented");
+	}
+	
+	@Test
+	void testDoesHnadHaveBlackjack() {
 		Card cardToAdd = new Card("1S", 11);
 		testHand.addCardToHand(cardToAdd);
-		assertEquals(testHand.containsAce(), true);
+		cardToAdd = new Card("KS", 10);
+		testHand.addCardToHand(cardToAdd);
+		//TODO: Test adding blackjack to hand hand changes the boolean tracking it
+		fail("Not yet implemented");
 	}
 
 }

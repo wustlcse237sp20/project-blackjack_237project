@@ -3,66 +3,54 @@ package blackjack;
 import java.util.ArrayList;
 
 public class Player {
-	private Hand hand;
-	private int score;
-	private boolean handIsBlackjack;
+	private ArrayList<Hand> hands;
 	private double chips;
 	private double bet;
 	
 	public Player(){
-		hand = new Hand();
+		hands = new ArrayList<Hand>();
+		hands.add(new Hand());
 	}
 	
 	/**
 	 * Performs a hit, dealing a card from the supplied deck to the player
 	 * @param deckToDrawFrom
 	 */
-	public void hit(Deck deckToDrawFrom) {
-		deckToDrawFrom.dealNextCardToPlayer(this);
-	}
-	/**
-	 * Adds a card to the players Hand and increases their score based on its value
-	 * @param cardToAdd
-	 */
-	public void addCardToHand(Card cardToAdd) {
-		hand.addCardToHand(cardToAdd);
-		if(hand.containsAce()) {
-			checkIfPlayerHasBlackjack();
-			//TODO: handle changing score of aces (subtract 10 from the players score, 
-			//but don't change the value stored in the card object)
-			score += cardToAdd.value; //replace this with neccessary code
-		} else {
-			score += cardToAdd.value;
-		}
+	public void hit(Deck deckToDrawFrom, int handToHitOn) {
+		deckToDrawFrom.dealNextCardToHand(hands.get(handToHitOn));
 	}
 	public void emptyHand() {
-		hand.emptyCardsInHand();
-		score = 0;
+		if(hands.size() == 2) {
+			hands.remove(1);
+		}
+		hands.get(0).emptyCardsInHand();
 	}
 	
-	//TODO: add handling of player being delt blackjack to update boolean
-	public void checkIfPlayerHasBlackjack() {
-	}
-	//TODO: add handling of hitting for dealer's hand
 	public void playDealersHand() {
+		//TODO: add handling of hitting for dealer's hand
 	}
 	
 	public void subtractChips(int numberOfChipsToSubtract) {
 		chips -= numberOfChipsToSubtract;
 	}
-	
 	public void addChips(double numberOfChipsToAdd) {
 		chips += numberOfChipsToAdd;
 	}
+	public void splitHands() {
+		hands.add(new Hand());
+		hands.get(1).addCardToHand(hands.get(0).getCardsInHand().get(1)); //copy the second card in the first hand to the first card in the second hand
+		hands.get(0).removeCardFromHand(1); //remove the copied card from the original hand
+	}
 	
-	public ArrayList<Card> getHand(){
-		return hand.getCardsInHand();
+	
+	public ArrayList<Hand> getHands(){
+		return hands;
 	}
-	public int getPlayerScore() {
-		return this.score;
+	public Hand getSingleHand(int handToGet){
+		return hands.get(handToGet);
 	}
-	public boolean doesPlayerHaveBlackjack() {
-		return this.handIsBlackjack;
+	public ArrayList<Card> getCardsInSingleHand(int handToGet){
+		return hands.get(handToGet).getCardsInHand();
 	}
 	public double getNumberOfChips() {
 		return chips;
