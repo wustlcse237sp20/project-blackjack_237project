@@ -22,6 +22,8 @@
   A player should be able to select the number of computer players to play with.<br/>
   Computer players should be able to play their hands in order according to randomly selected hit/stand rules.<br/>
   A player should be able to have the option to have card counting tools displayed on the screen while playing.<br/>
+  A player should be able to surrender.<br/>
+  A player should be able to take insurance.<br/>
   
 ## Features that don't work:<br/>
   The double down button on the GUI is currently a placeholder that does nothing.<br/>
