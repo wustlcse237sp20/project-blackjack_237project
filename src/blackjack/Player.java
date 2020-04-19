@@ -26,10 +26,6 @@ public class Player {
 		hands.get(0).emptyCardsInHand();
 	}
 	
-	public void playDealersHand() {
-		//TODO: add handling of hitting for dealer's hand
-	}
-	
 	public void subtractChips(int numberOfChipsToSubtract) {
 		chips -= numberOfChipsToSubtract;
 	}

@@ -129,7 +129,7 @@ public class Blackjack {
 			if(userInterface.getControllingHandNumber() == 2) {
 				userInterface.incrementControllingHandNumber();
 			}
-			getDealer().playDealersHand();
+			playDealersHand();
 			determineWinnerOfHand();
 			userInterface.displayHandsOnFrame(false);
 			finishHand();
@@ -236,6 +236,11 @@ public class Blackjack {
 	
 	public Player getDealer() {
 		return players.get(0);
+	}
+	public void playDealersHand() {
+		while (players.get(0).getSingleHand(0).getScore() < 17) {
+			getDealer().hit(deck, 0);
+		}
 	}
 	public Player getUser() {
 		return players.get(1);
