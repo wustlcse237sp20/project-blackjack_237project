@@ -15,6 +15,7 @@
   A player should be able to split their hand.<br/>
   A dealer should be able to complete their hand based on hitting rules for the dealer.<br/>
   A player should be able to double down on their hand.<br/>
+  An ace should be worth 1 or 11 depending on which gives the hand the best score.<br/>
   
  ## Stories to implement for Iteration 3:<br/>
   A player should be able to select the number of computer players to play with.<br/>
