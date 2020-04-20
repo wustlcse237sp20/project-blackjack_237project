@@ -14,8 +14,6 @@
   A player should be able to bet on each hand and recieve winnings based on payout rules.<br/>
   A player should be able to split their hand.<br/>
   A dealer should be able to complete their hand based on hitting rules for the dealer.<br/>
-
-## Stories to implement for Iteration 2:<br/>
   A player should be able to double down on their hand.<br/>
   
  ## Stories to implement for Iteration 3:<br/>
@@ -26,7 +24,8 @@
   A player should be able to take insurance.<br/>
   
 ## Features that don't work:<br/>
-  The double down button on the GUI is currently a placeholder that does nothing.<br/>
+  The double down button should only appear before deciding to hit<br/>
+  The double down button should only appear if the user has enough chips to double their bet<br/>
   The split button should only appear if the starting hand contains a pair<br/>
   
 
