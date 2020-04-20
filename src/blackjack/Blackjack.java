@@ -42,6 +42,7 @@ public class Blackjack {
 			players.add(new Player());
 		}
 		setDeckSize();
+		deck.shuffle();
 		setChipAmount();
 		userInterface.initializeGUI();
 		playAHand();
@@ -95,6 +96,7 @@ public class Blackjack {
 			getUser().hit(deck, 0);
 			userInterface.displayHandsOnFrame(true);
 			if(getUserHandScore(getUserHands().get(0)) > 21) {
+				playDealersHand();
 				determineWinnerOfHand();
 				userInterface.displayHandsOnFrame(false);
 				finishHand();
@@ -108,6 +110,7 @@ public class Blackjack {
 			if(getUserHandScore(getUserHands().get(userInterface.getControllingHandNumber()-1)) > 21) {
 				if(userInterface.getControllingHandNumber() == 2) {
 					userInterface.incrementControllingHandNumber();
+					playDealersHand();
 					determineWinnerOfHand();
 					userInterface.displayHandsOnFrame(false);
 					finishHand();
@@ -127,7 +130,7 @@ public class Blackjack {
 			userInterface.displayHandsOnFrame(true);
 		} else {
 			if(userInterface.getControllingHandNumber() == 2) {
-				userInterface.incrementControllingHandNumber();
+				userInterface.incrementControllingHandNumber(); //dealer didnt hit on a thirteen; occasionally has score reset
 			}
 			playDealersHand();
 			determineWinnerOfHand();
@@ -147,6 +150,12 @@ public class Blackjack {
 	}
 	public void handleDoubleDownPress() {
 		//TODO:Implement double down procedure (double users bet and hit once, followed by standing)
+		getUser().subtractChips((int)getUser().getBet());
+		getUser().setBet(2*(int)getUser().getBet());
+		getUser().hit(deck,  0);
+		//userInterface.displayHandsOnFrame(true);
+		handleStandPress();
+		
 	}
 	
 	/**

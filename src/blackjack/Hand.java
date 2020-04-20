@@ -25,6 +25,7 @@ public class Hand {
 	}
 	public void emptyCardsInHand() {
 		cardsInHand.clear();
+		aces=0;
 		score = 0;
 	}
 	public boolean doesHandHaveBlackjack() {

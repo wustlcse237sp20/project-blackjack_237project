@@ -211,4 +211,57 @@ class GameTests{
 		assertEquals(testGame.isHandWon(0), false);
 		assertEquals(testGame.isHandPushed(0), false);
 	}
+	
+
+	@Test
+	void testDealerPlaysOutHandAbove16() {
+		Card cardToAdd = new Card("13D", 10);
+		Card cardToAdd2 = new Card("1D", 11);
+		testGame.getDealerHands().get(0).emptyCardsInHand();
+
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd);
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd2);
+		testGame.playDealersHand();
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 2);
+		
+		
+
+
+		
+	}
+
+	@Test
+	void doubleDown() {
+		Card cardToAdd = new Card("2D", 2);
+		Card cardToAdd2 = new Card("9D", 9);
+		testGame.getUser().getHands().get(0).emptyCardsInHand();
+		testGame.getUser().getHands().get(0).addCardToHand(cardToAdd);
+		testGame.getUser().getHands().get(0).addCardToHand(cardToAdd2);
+		testGame.getUser().setBet(100);
+		double originalBet = testGame.getUser().getBet();
+		testGame.handleDoubleDownPress();
+		assertEquals(testGame.getUser().getBet(), 2*originalBet);
+	}
+	
+	
+	@Test
+	void testDealerPlaysOutHandbelow17() {
+		Card cardToAdd3 = new Card("13D", 10);
+		Card cardToAdd4 = new Card("6D", 6);
+		testGame.getUserHands().get(0).emptyCardsInHand();
+		testGame.getDealerHands().get(0).emptyCardsInHand();
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd3);
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd4);
+		testGame.playDealersHand();
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 3);
+
+
+		
+	}
+	
+	
+	
+	
+	
+	
 }
