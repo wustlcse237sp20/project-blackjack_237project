@@ -24,7 +24,13 @@ class HandTests {
 	
 	@Test
 	void testChangingScoreOfAces() {
-		fail("Not yet implemented");
+		Card cardToAdd = new Card("13D", 10);
+		Card cardToAdd2 = new Card("1D", 11);
+		testHand.addCardToHand(cardToAdd);
+		testHand.addCardToHand(cardToAdd2);
+		assertEquals(testHand.getScore(), 21);
+		testHand.addCardToHand(new Card("12D", 10));
+		assertEquals(testHand.getScore(), 21);
 	}
 	
 	@Test
@@ -34,7 +40,7 @@ class HandTests {
 		cardToAdd = new Card("KS", 10);
 		testHand.addCardToHand(cardToAdd);
 		//TODO: Test adding blackjack to hand hand changes the boolean tracking it
-		fail("Not yet implemented");
+		assertTrue(testHand.doesHandHaveBlackjack());
 	}
 
 }

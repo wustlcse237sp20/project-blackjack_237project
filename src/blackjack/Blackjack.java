@@ -147,6 +147,10 @@ public class Blackjack {
 	}
 	public void handleDoubleDownPress() {
 		//TODO:Implement double down procedure (double users bet and hit once, followed by standing)
+		getUser().subtractChips((int)getUser().getBet());
+		getUser().setBet(2*(int)getUser().getBet());
+		getUser().hit(deck,  0);
+		handleStandPress();
 	}
 	
 	/**
