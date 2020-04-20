@@ -41,9 +41,9 @@ class DeckTests {
 		}
 		deck.dealOutHands(testPlayers);
 		for(Player player: testPlayers) {
-			assertEquals(player.getHand().size(), 2);
+			assertEquals(player.getCardsInSingleHand(0).size(), 2);
 			assertEquals(deck.getCardsInTheDeck().size(), 8*52-6*2);
-			for(Card deltCard : player.getHand()) {
+			for(Card deltCard : player.getCardsInSingleHand(0)) {
 				assertEquals(deck.getCardsInTheDeck().contains(deltCard), false);
 			}
 		}
@@ -58,10 +58,10 @@ class DeckTests {
 		}
 		deck.dealOutHands(testPlayers);
 		for(int i = 0; i < 2; i++) {
-			deck.dealNextCardToPlayer(testPlayers.get(1));
+			deck.dealNextCardToHand(testPlayers.get(0).getSingleHand(0));
 		}
 		for(Player player : testPlayers) {
-			for(Card cardInHand : player.getHand()) {
+			for(Card cardInHand : player.getCardsInSingleHand(0)) {
 				assertEquals(deck.getDeltCards().contains(cardInHand), true);
 				assertEquals(deck.getCardsInTheDeck().contains(cardInHand), false);
 			}
@@ -73,9 +73,9 @@ class DeckTests {
 		Deck deck = new Deck(8);
 		Player testPlayer = new Player();
 		for(int i = 0; i < 2; i++) {
-			deck.dealNextCardToPlayer(testPlayer);
+			deck.dealNextCardToHand(testPlayer.getSingleHand(0));
 		}
-		assertEquals(testPlayer.getHand(), deck.getDeltCards());
+		assertEquals(testPlayer.getCardsInSingleHand(0), deck.getDeltCards());
 		for(Card deltCard : deck.getDeltCards()) {
 			assertEquals(deck.getCardsInTheDeck().contains(deltCard), false);
 		}
@@ -88,7 +88,7 @@ class DeckTests {
 			ArrayList<Card> fullDeck = (ArrayList<Card>) deck.getCardsInTheDeck().clone();
 			Player testPlayer = new Player();
 			for(int j = 0; j < (i*52)/2+1; j++) {
-				deck.dealNextCardToPlayer(testPlayer);
+				deck.dealNextCardToHand(testPlayer.getSingleHand(0));
 			}
 			deck.shuffle();
 			assertEquals(deck.getCardsInTheDeck().size(), i*52);

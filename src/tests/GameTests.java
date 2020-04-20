@@ -12,20 +12,31 @@ import org.junit.jupiter.api.Test;
 
 class GameTests{
 	private class MockedBlackjack extends Blackjack {
-        @Override
-        protected int askForNumberOfDecksToUse() {
-        	return 1;
+		@Override
+        protected void setDeckSize() {
+			deck = new Deck(1);
+        }
+		@Override
+        protected void setChipAmount() {
+			getUser().setChipAmount(100);
+        }
+		@Override
+        protected void setBetAmount() {
+			getUser().setBet(100);
+			getUser().subtractChips(100);
         }
         @Override
-        protected boolean askToPlayNewHand() {
+        protected boolean startNewHand() {
         	return false;
         }
     }
+	private GUI userInterface;
 	private MockedBlackjack testGame;
 	
 	@BeforeEach
 	void setupGameInstance() {
 		testGame = new MockedBlackjack();
+		userInterface = new GUI(700, 700, testGame);
 	}
 	
 	
@@ -33,12 +44,12 @@ class GameTests{
 	void testBustOnHit() {
 		JButton mockButton = new JButton();
 		ActionEvent mockPressHitButton = new ActionEvent(mockButton, ActionEvent.ACTION_PERFORMED,"Hit");
-		while(testGame.getUser().getPlayerScore() < 21) {
-			testGame.actionPerformed(mockPressHitButton);
+		while(testGame.getSingleUserHand(0).getScore() < 21) {
+			userInterface.actionPerformed(mockPressHitButton);
 		}
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), false);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 	
 	@Test
@@ -54,13 +65,13 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : pushHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		testGame.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), true);
+		userInterface.actionPerformed(mockPressStandButton);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), true);
 	}
 	
 	@Test
@@ -75,13 +86,13 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		testGame.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), true);
+		userInterface.actionPerformed(mockPressStandButton);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), true);
 	}
 	
 	@Test
@@ -94,23 +105,23 @@ class GameTests{
 		for(int i = 0; i < 2; i++) {
 			losingHand.addCardToHand(new Card("9H", 9)); //losing hand is 18
 		}
-		winningHand.addCardToHand(new Card("9S", 11)); //winning hand is 21
-		winningHand.addCardToHand(new Card("9H", 10));
-		winningHand.addCardToHand(new Card("3D", 10));
+		winningHand.addCardToHand(new Card("9S", 9)); //winning hand is 21
+		winningHand.addCardToHand(new Card("9H", 9));
+		winningHand.addCardToHand(new Card("3D", 3));
 		
 		//Test user score greater than dealer
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : winningHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		testGame.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), true);
-		assertEquals(testGame.isHandPush(), false);
+		userInterface.actionPerformed(mockPressStandButton);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), true);
+		assertEquals(testGame.isHandPushed(0), false);
 		
 	}
 	
@@ -122,9 +133,9 @@ class GameTests{
 		Hand losingHand = new Hand();
 		Hand blackjackHand = new Hand();		
 		
-		losingHand.addCardToHand(new Card("9S", 11)); //losing hand is 21
-		losingHand.addCardToHand(new Card("9H", 10));
-		losingHand.addCardToHand(new Card("3D", 10));
+		losingHand.addCardToHand(new Card("9S", 9)); //losing hand is 21
+		losingHand.addCardToHand(new Card("9H", 9));
+		losingHand.addCardToHand(new Card("3D", 3));
 		blackjackHand.addCardToHand(new Card("1S", 11)); //blackjack is K and A
 		blackjackHand.addCardToHand(new Card("13H", 10));
 		
@@ -132,15 +143,15 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
-		testGame.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), true);
-		assertEquals(testGame.isHandPush(), false);
+		userInterface.actionPerformed(mockPressStandButton);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), true);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 	
 	@Test
@@ -150,9 +161,9 @@ class GameTests{
 		
 		Hand winningHand = new Hand();
 		Hand losingHand = new Hand();		
-		winningHand.addCardToHand(new Card("9S", 11)); //winning hand is 21
-		winningHand.addCardToHand(new Card("3H", 10));
-		winningHand.addCardToHand(new Card("9D", 10));
+		winningHand.addCardToHand(new Card("9S", 9)); //winning hand is 21
+		winningHand.addCardToHand(new Card("3H", 3));
+		winningHand.addCardToHand(new Card("9D", 9));
 		for(int i = 0; i < 2; i++) { 
 			losingHand.addCardToHand(new Card("9H", 9)); //losing hand is 18
 		}
@@ -161,15 +172,15 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : winningHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
-		testGame.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), false);
+		userInterface.actionPerformed(mockPressStandButton);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
 	
 	@Test
@@ -179,9 +190,9 @@ class GameTests{
 		
 		Hand losingHand = new Hand();
 		Hand blackjackHand = new Hand();		
-		losingHand.addCardToHand(new Card("9S", 11)); //losing hand is 21
-		losingHand.addCardToHand(new Card("9H", 10));
-		losingHand.addCardToHand(new Card("3D", 10));
+		losingHand.addCardToHand(new Card("9S", 9)); //losing hand is 21
+		losingHand.addCardToHand(new Card("9H", 9));
+		losingHand.addCardToHand(new Card("3D", 3));
 		blackjackHand.addCardToHand(new Card("1S", 11)); //blackjack is A K
 		blackjackHand.addCardToHand(new Card("13H", 10));
 		
@@ -190,14 +201,67 @@ class GameTests{
 		testGame.getUser().emptyHand();
 		testGame.getDealer().emptyHand();
 		for(Card cardInHand : losingHand.getCardsInHand()) {
-			testGame.getUser().addCardToHand(cardInHand);
+			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
-			testGame.getDealer().addCardToHand(cardInHand);
+			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		testGame.actionPerformed(mockPressStandButton);
-		assertEquals(testGame.isHandOver(), true);
-		assertEquals(testGame.isHandWon(), false);
-		assertEquals(testGame.isHandPush(), false);
+		userInterface.actionPerformed(mockPressStandButton);
+		assertEquals(testGame.areUserHandsOver(), true);
+		assertEquals(testGame.isHandWon(0), false);
+		assertEquals(testGame.isHandPushed(0), false);
 	}
+	
+
+	@Test
+	void testDealerPlaysOutHandAbove16() {
+		Card cardToAdd = new Card("13D", 10);
+		Card cardToAdd2 = new Card("1D", 11);
+		testGame.getDealerHands().get(0).emptyCardsInHand();
+
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd);
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd2);
+		testGame.playDealersHand();
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 2);
+		
+		
+
+
+		
+	}
+
+	@Test
+	void doubleDown() {
+		Card cardToAdd = new Card("2D", 2);
+		Card cardToAdd2 = new Card("9D", 9);
+		testGame.getUser().getHands().get(0).emptyCardsInHand();
+		testGame.getUser().getHands().get(0).addCardToHand(cardToAdd);
+		testGame.getUser().getHands().get(0).addCardToHand(cardToAdd2);
+		testGame.getUser().setBet(100);
+		double originalBet = testGame.getUser().getBet();
+		testGame.handleDoubleDownPress();
+		assertEquals(testGame.getUser().getBet(), 2*originalBet);
+	}
+	
+	
+	@Test
+	void testDealerPlaysOutHandbelow17() {
+		Card cardToAdd3 = new Card("13D", 10);
+		Card cardToAdd4 = new Card("6D", 6);
+		testGame.getUserHands().get(0).emptyCardsInHand();
+		testGame.getDealerHands().get(0).emptyCardsInHand();
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd3);
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd4);
+		testGame.playDealersHand();
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 3);
+
+
+		
+	}
+	
+	
+	
+	
+	
+	
 }

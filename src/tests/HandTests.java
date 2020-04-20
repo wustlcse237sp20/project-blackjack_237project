@@ -23,10 +23,28 @@ class HandTests {
 	}
 	
 	@Test
-	void testAddingAnAceToAHand() {
+	void testChangingScoreOfAces() {
+		Card cardToAdd = new Card("13D", 10);
+		Card cardToAdd2 = new Card("1D", 11);
+		testHand.addCardToHand(cardToAdd2);
+		testHand.addCardToHand(cardToAdd);
+		assertEquals(testHand.getScore(), 21);
+		testHand.addCardToHand(new Card("12D", 10));
+		assertEquals(testHand.getScore(), 21);
+		
+		
+
+		
+	}
+	
+	@Test
+	void testDoesHnadHaveBlackjack() {
 		Card cardToAdd = new Card("1S", 11);
 		testHand.addCardToHand(cardToAdd);
-		assertEquals(testHand.containsAce(), true);
+		cardToAdd = new Card("13S", 10);
+		testHand.addCardToHand(cardToAdd);
+		//TODO: Test adding blackjack to hand hand changes the boolean tracking it
+		assertTrue(testHand.doesHandHaveBlackjack());
 	}
 
 }
