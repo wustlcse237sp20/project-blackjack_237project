@@ -39,6 +39,7 @@ public class Player {
 	}
 	
 	
+	
 	public ArrayList<Hand> getHands(){
 		return hands;
 	}

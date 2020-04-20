@@ -29,9 +29,5 @@ class PlayerTests {
 		assertNotEquals(testPlayer.getSingleHand(0).getScore(), scoreBeforeHit);
 	}
 
-	@Test
-	void testDealerPlaysOutHand() {
-		fail("Not yet implemented");
-	}
 
 }
