@@ -49,61 +49,6 @@ public class GUI implements ActionListener{
 	public void showUserInterface() {
 		frame.setVisible(true);
 	}
-	
-	public int askForNumberOfChips() {
-		try {
-			String numberOfChips = showNumberOfChipsPrompt();
-			while(!numberOfChips.matches("[0-9]+")) {
-				showChipNumberError();
-				numberOfChips = showNumberOfChipsPrompt();
-			}
-			return Integer.parseInt(numberOfChips);
-		} catch (NullPointerException e){
-			System.exit(0);
-		}
-		return 1;
-	}
-	private String showNumberOfChipsPrompt() {
-		return (String) JOptionPane.showInputDialog(
-										frame, 
-										"How many chips to start with (Whole dollars only, $100-$999,999)?", 
-										"Blackjack", 
-										JOptionPane.QUESTION_MESSAGE);
-	}
-	public void showChipNumberError() {
-		JOptionPane.showMessageDialog(frame, "Please enter a whole number between 100 and 999999", "Error", JOptionPane.ERROR_MESSAGE);
-	}
-	public void showChipsGoneMessage() {
-		JOptionPane.showMessageDialog(frame, "You have run out of chips", "Error", JOptionPane.ERROR_MESSAGE);
-	}
-	
-	public int askForBet() {
-		try {
-			String betAmount = showBetPrompt();
-			while(!betAmount.matches("[0-9]+")) {
-				showBetAmountError();
-				betAmount = showBetPrompt();
-			}
-			return Integer.parseInt(betAmount);
-		} catch (NullPointerException e){
-			System.exit(0);
-		}
-		return 1;
-	}
-	private String showBetPrompt() {
-		return (String)JOptionPane.showInputDialog(
-							frame, 
-							"How much to bet (Whole dollars only, $1 - $" + String.valueOf(decimalFormat.format(gameInstance.getUser().getNumberOfChips())) + ")?", 
-							"Blackjack", 
-							JOptionPane.QUESTION_MESSAGE);
-	}
-	public void showBetAmountError() {
-		JOptionPane.showMessageDialog(frame, 
-				"Please enter a whole number between 1 and " + String.valueOf(decimalFormat.format(gameInstance.getUser().getNumberOfChips())), 
-				"Error", 
-				JOptionPane.ERROR_MESSAGE);
-	}
-	
 	/**
 	 * Adds all the buttons and text to the GUI
 	 */
@@ -161,13 +106,75 @@ public class GUI implements ActionListener{
 		labelToCreate.setForeground(new Color(255,255,255));
 		frame.getContentPane().add(labelToCreate);
 	}
-	
+	public int askForNumberOfChips() {
+		try {
+			String numberOfChips = showNumberOfChipsPrompt();
+			while(!numberOfChips.matches("[0-9]+")) {
+				showChipNumberError();
+				numberOfChips = showNumberOfChipsPrompt();
+			}
+			return Integer.parseInt(numberOfChips);
+		} catch (NullPointerException e){
+			System.exit(0);
+		}
+		return 1;
+	}
+	private String showNumberOfChipsPrompt() {
+		return (String) JOptionPane.showInputDialog(
+										frame, 
+										"How many chips to start with (Whole dollars only, $100-$999,999)?", 
+										"Blackjack", 
+										JOptionPane.QUESTION_MESSAGE);
+	}
+	public void showChipNumberError() {
+		JOptionPane.showMessageDialog(frame, "Please enter a whole number between 100 and 999999", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	public void showChipsGoneMessage() {
+		JOptionPane.showMessageDialog(frame, "You have run out of chips", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	public int askForBet() {
+		try {
+			String betAmount = showBetPrompt();
+			while(!betAmount.matches("[0-9]+")) {
+				showBetAmountError();
+				betAmount = showBetPrompt();
+			}
+			return Integer.parseInt(betAmount);
+		} catch (NullPointerException e){
+			System.exit(0);
+		}
+		return 1;
+	}
+	private String showBetPrompt() {
+		return (String)JOptionPane.showInputDialog(
+							frame, 
+							"How much to bet (Whole dollars only, $1 - $" + String.valueOf(decimalFormat.format(gameInstance.getUser().getNumberOfChips())) + ")?", 
+							"Blackjack", 
+							JOptionPane.QUESTION_MESSAGE);
+	}
+	public void showBetAmountError() {
+		JOptionPane.showMessageDialog(frame, 
+				"Please enter a whole number between 1 and " + String.valueOf(decimalFormat.format(gameInstance.getUser().getNumberOfChips())), 
+				"Error", 
+				JOptionPane.ERROR_MESSAGE);
+	}	
 	/**
 	 * Adds images to the GUI for the cards in each player's hand, optionallt hiding one of the dealer's cards
 	 * @param coverDealerCard
 	 */
 	public void displayHandsOnFrame(boolean coverDealerCard) {
 		clearHandsFromFrame();
+		for(int i = 0; i < gameInstance.getNumberOfComputerPlayers(); i++) {
+			if(i < 2) {
+				createTextLabel(frameWidth - 230, 135+i*200, 150, "Computer Player " + (i+1));
+				createTextLabel(frameWidth - 230, 150+i*200, 150, "Score: " + String.valueOf(gameInstance.getComputerPlayerScore(i+1)));
+				addPlayerHandToFrame(gameInstance.getComputerPlayerHands(i+1), frameWidth-200, 175+i*200);
+			} else {
+				createTextLabel(95, frameHeight - 465 - (i-2)*200, 150, "Computer Player " + (i+1));
+				createTextLabel(95, frameHeight - 450 - (i-2)*200, 150, "Score: " + String.valueOf(gameInstance.getComputerPlayerScore(i+1)));
+				addPlayerHandToFrame(gameInstance.getComputerPlayerHands(i+1), 125, frameHeight - 425 - (i-2)*200);
+			}
+		}
 		addPlayerHandToFrame(gameInstance.getUserHands(), frameWidth/2-40, frameHeight-280);
 		if(coverDealerCard) {
 			addDealerHandToFrame(gameInstance.getDealerHands(), frameWidth/2-40, 15);
@@ -261,6 +268,12 @@ public class GUI implements ActionListener{
 				break;
 			case "Double Down":
 				gameInstance.handleDoubleDownPress();
+				break;
+			case "Surrender":
+				gameInstance.handleSurrenderPress();
+				break;
+			case "Take Insurance":
+				gameInstance.handleInsurancePress();
 				break;
 		}
 	}
