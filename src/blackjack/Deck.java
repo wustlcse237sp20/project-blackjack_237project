@@ -61,7 +61,7 @@ public class Deck {
 		for (Player player : players) {
 			player.emptyHand();
 			for(int i = 0; i < 2; i++) {
-				dealNextCardToPlayer(player);
+				dealNextCardToHand(player.getHands().get(0));
 			}
 		}
 	}
@@ -69,8 +69,8 @@ public class Deck {
 	 * Gives the next card in the deck to the supplied Player
 	 * @param playerToDealTo
 	 */
-	public void dealNextCardToPlayer(Player playerToDealTo) {
-		playerToDealTo.addCardToHand(cardsInTheDeck.get(0));
+	public void dealNextCardToHand(Hand handToDealTo) {
+		handToDealTo.addCardToHand(cardsInTheDeck.get(0));
 		cardsDeltToPlayers.add(cardsInTheDeck.get(0));
 		cardsInTheDeck.remove(0);
 	}
