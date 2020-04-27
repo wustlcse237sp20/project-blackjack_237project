@@ -39,7 +39,7 @@ public class Player {
 	}
 	
 	
-	
+	//----------------------------Setters and Getters----------------------------//
 	public ArrayList<Hand> getHands(){
 		return hands;
 	}

@@ -25,11 +25,6 @@
   A player should be able to take insurance.<br/>
   
 ## Features that don't work:<br/>
-  The double down button should only appear before deciding to hit<br/>
-  The double down button should only appear if the user has enough chips to double their bet<br/>
-  The split button should only appear if the starting hand contains a pair<br/>
-  An extra "Hand Lost" notification appears when the dealer busts<br/>
-  
 
 ## Instructions to launch the game:<br/>
 

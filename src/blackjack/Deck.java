@@ -75,6 +75,7 @@ public class Deck {
 		cardsInTheDeck.remove(0);
 	}
 	
+	//----------------------------Setters and Getters----------------------------//
 	public ArrayList<Card> getCardsInTheDeck(){
 		return this.cardsInTheDeck;
 	}
