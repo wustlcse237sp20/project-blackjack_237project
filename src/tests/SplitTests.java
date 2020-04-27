@@ -13,40 +13,28 @@ import org.junit.jupiter.api.Test;
 class SplitTests {
 	private class MockedBlackjack extends Blackjack {
 		@Override
-        protected void setDeckSize() {
-			deck = new Deck(1);
-        }
-		@Override
-        protected void setChipAmount() {
-			getUser().setChipAmount(100);
-        }
+		protected void setupGameParameters() {
+			setNumberOfComputerPlayers(0);
+			setDeck(1);
+			setStartingChipNumber(100);
+			setDisplayGUI(false);
+			playAHand();
+		}
 		@Override
         protected void setBetAmount() {
 			getUser().setBet(50);
 			getUser().subtractChips(50);
         }
-        @Override
+		@Override
         protected boolean startNewHand() {
         	return false;
         }
     }
 	private MockedBlackjack testGame;
-	JButton mockSplitButton;
-	ActionEvent mockPressSplitButton;
-	JButton mockStandButton;
-	ActionEvent mockPressStandButton;
-	JButton mockHitButton;
-	ActionEvent mockPressHitButton;
 	
 	@BeforeEach
 	void setupGameInstance() {
 		testGame = new MockedBlackjack();
-		mockSplitButton = new JButton();
-		mockPressSplitButton = new ActionEvent(mockSplitButton, ActionEvent.ACTION_PERFORMED,"Split");
-		mockStandButton = new JButton();
-		mockPressStandButton = new ActionEvent(mockSplitButton, ActionEvent.ACTION_PERFORMED,"Stand");
-		mockHitButton = new JButton();
-		mockPressHitButton = new ActionEvent(mockSplitButton, ActionEvent.ACTION_PERFORMED,"Hit");
 	}
 	
 	@Test
@@ -56,7 +44,8 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(testCard);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		assertEquals(2, testGame.getUserHands().size()); //check there are now two hands
 		for(int i = 0; i < 2; i++) {
 			assertEquals(2, testGame.getUser().getCardsInSingleHand(i).size()); //check both hands have two cards
@@ -78,14 +67,15 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(tenOfSpades);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		
 		testGame.getSingleUserHand(0).removeCardFromHand(1);
 		testGame.getSingleUserHand(0).addCardToHand(tenOfSpades); //score of first hand is 20
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
-		while(testGame.getUserHandScore(testGame.getSingleUserHand(1)) < 21) { //force bust on second hand
-			testGame.userInterface.actionPerformed(mockPressHitButton);
+		while(testGame.getUserHandScore(testGame.getSingleUserHand(1)) < 22) { //force bust on second hand
+			testGame.handleHitPress();
 		}		
 		
 		assertEquals(false, testGame.isHandWon(1));
@@ -108,14 +98,15 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(tenOfSpades);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
-		while(testGame.getUserHandScore(testGame.getSingleUserHand(0)) < 21) { //force bust on first hand
-			testGame.userInterface.actionPerformed(mockPressHitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
+		while(testGame.getUserHandScore(testGame.getSingleUserHand(0)) < 22) { //force bust on first hand
+			testGame.handleHitPress();
 		}
 		
 		testGame.getSingleUserHand(1).removeCardFromHand(1);
 		testGame.getSingleUserHand(1).addCardToHand(tenOfSpades); //score of second hand is 20
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		assertEquals(false, testGame.isHandWon(0));
 		assertEquals(true, testGame.isHandWon(1));
@@ -137,15 +128,16 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(tenOfSpades);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		
 		testGame.getSingleUserHand(0).removeCardFromHand(1);
 		testGame.getSingleUserHand(0).addCardToHand(tenOfSpades); //score of first hand is 20
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		testGame.getSingleUserHand(1).removeCardFromHand(1);
 		testGame.getSingleUserHand(1).addCardToHand(tenOfSpades); //score of second hand is 20
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		assertEquals(true, testGame.isHandWon(0));
 		assertEquals(true, testGame.isHandWon(1));
@@ -156,15 +148,15 @@ class SplitTests {
 	
 	@Test
 	void testLosingBothHandsByBust() {
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		
-		while(testGame.getUserHandScore(testGame.getSingleUserHand(0)) < 21) { //force bust on first hand
-			testGame.userInterface.actionPerformed(mockPressHitButton);
+		while(testGame.getUserHandScore(testGame.getSingleUserHand(0)) < 22) { //force bust on first hand
+			testGame.handleHitPress();
 		}
-		while(testGame.getUserHandScore(testGame.getSingleUserHand(1)) < 21) { //force bust on second hand
-			testGame.userInterface.actionPerformed(mockPressHitButton);
+		while(testGame.getUserHandScore(testGame.getSingleUserHand(1)) < 22) { //force bust on second hand
+			testGame.handleHitPress();
 		}
-		
 		assertEquals(false, testGame.isHandWon(0));
 		assertEquals(false, testGame.isHandWon(1));
 		assertEquals(false, testGame.isHandPushed(0));
@@ -186,15 +178,16 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(tenOfSpades);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		
 		testGame.getSingleUserHand(0).removeCardFromHand(1);
 		testGame.getSingleUserHand(0).addCardToHand(eightOfSpades); //score of first hand is 18
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		testGame.getSingleUserHand(1).removeCardFromHand(1);
 		testGame.getSingleUserHand(1).addCardToHand(eightOfSpades); //score of second hand is 18
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		assertEquals(false, testGame.isHandWon(0));
 		assertEquals(false, testGame.isHandWon(1));
@@ -216,15 +209,16 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(tenOfSpades);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		
 		testGame.getSingleUserHand(0).removeCardFromHand(1);
 		testGame.getSingleUserHand(0).addCardToHand(nineOfSpades); //score of first hand is 19
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		testGame.getSingleUserHand(1).removeCardFromHand(1);
 		testGame.getSingleUserHand(1).addCardToHand(nineOfSpades); //score of second hand is 19
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		assertEquals(false, testGame.isHandWon(0));
 		assertEquals(false, testGame.isHandWon(1));
@@ -247,15 +241,16 @@ class SplitTests {
 		for(int i = 0; i < 2; i++) {
 			testGame.getSingleUserHand(0).addCardToHand(tenOfSpades);
 		}
-		testGame.userInterface.actionPerformed(mockPressSplitButton);
+		testGame.handleSplitPress();
+		testGame.getUserInterface().incrementControllingHandNumber();
 		
 		testGame.getSingleUserHand(0).removeCardFromHand(1);
 		testGame.getSingleUserHand(0).addCardToHand(nineOfSpades); //score of first hand is 19 - push
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		testGame.getSingleUserHand(1).removeCardFromHand(1);
 		testGame.getSingleUserHand(1).addCardToHand(aceOfSpades); //score of second hand is BJ
-		testGame.userInterface.actionPerformed(mockPressStandButton);
+		testGame.handleStandPress();
 		
 		assertEquals(false, testGame.isHandWon(0));
 		assertEquals(true, testGame.isHandWon(1));

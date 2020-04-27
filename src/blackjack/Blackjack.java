@@ -4,15 +4,15 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 
 public class Blackjack {
-	public GUI userInterface;
+	private GUI userInterface;
 	private int frameHeight = 800;
 	private int frameWidth = 800;
+	private boolean displayGUI = true;
 	
-	protected Deck deck;
-	private int numberOfPlayers = 1; //number of players (not including the dealer)
+	private Deck deck;
 	private ArrayList<Player> players = new ArrayList<Player>(); //first player in list is the dealer, second is the user, all rest are computer controlled
 	private boolean handsOver = false;
-	private ArrayList<Boolean> handsWon;
+	public ArrayList<Boolean> handsWon;
 	private ArrayList<Boolean> handsPushed;
 
 	/**
@@ -23,7 +23,6 @@ public class Blackjack {
 			public void run() {
 				try {
 					Blackjack window = new Blackjack();
-					window.userInterface.showUserInterface();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -38,25 +37,35 @@ public class Blackjack {
 		handsWon = new ArrayList<Boolean>();
 		handsPushed = new ArrayList<Boolean>();
 		userInterface = new GUI(frameHeight, frameWidth, this);
-		for(int i = 0; i < numberOfPlayers + 1; i++) {
-			players.add(new Player());
-		}
-		setDeckSize();
-		deck.shuffle();
-		setChipAmount();
-		playAHand();
+		setupGameParameters();
+	}
+	protected void setupGameParameters() {
+		StartupGUI setupGUI = new StartupGUI(this);
+		setupGUI.showSetupWindow();
 	}
 	
-	protected void setDeckSize() {
-		int numberOfSingleDecksToUse = userInterface.askForNumberOfDecksToUse();
-		while(numberOfSingleDecksToUse < 1 || numberOfSingleDecksToUse > 8) {
-			userInterface.showDeckSizeError();
-			numberOfSingleDecksToUse = userInterface.askForNumberOfDecksToUse();
+	/**
+	 * Deals out a hand to the players and displays the appropriate cards on the GUI
+	 */
+	public void playAHand() {
+		if(displayGUI) {
+			userInterface.showUserInterface();
 		}
-		deck = new Deck(numberOfSingleDecksToUse);
+		handsOver = false;
+		handsWon.clear();
+		handsPushed.clear();
+		if(getUserNumberOfChips() < 1) {
+			userInterface.showChipsGoneMessage();
+			resetNumberOfChips();
+		}
+		setBetAmount();
+		deck.dealOutHands(players);
+		userInterface.displayHandsOnFrame(true);
 	}
-	
-	protected void setChipAmount() {
+	/**
+	 * Prompts the user to ask for the number of chips to 
+	 */
+	private void resetNumberOfChips() {
 		int numberOfChipsToStartWith = userInterface.askForNumberOfChips();
 		while(numberOfChipsToStartWith < 100 || numberOfChipsToStartWith > 999999) {
 			userInterface.showChipNumberError();
@@ -64,22 +73,9 @@ public class Blackjack {
 		}
 		getUser().setChipAmount(numberOfChipsToStartWith);
 	}
-	
 	/**
-	 * Deals out a hand to the players and displays the appropriate cards on the GUI
+	 * Prompts the user to ask for how much to bet on a hand
 	 */
-	private void playAHand() {
-		handsOver = false;
-		handsWon.clear();
-		handsPushed.clear();
-		if(getUserNumberOfChips() == 0) {
-			userInterface.showChipsGoneMessage();
-			setChipAmount();
-		}
-		setBetAmount();
-		deck.dealOutHands(players);
-		userInterface.displayHandsOnFrame(true);
-	}
 	protected void setBetAmount() {
 		int betAmount = userInterface.askForBet();
 		while(betAmount < 1 || betAmount > getUserNumberOfChips()) {
@@ -129,7 +125,7 @@ public class Blackjack {
 			userInterface.displayHandsOnFrame(true);
 		} else {
 			if(userInterface.getControllingHandNumber() == 2) {
-				userInterface.incrementControllingHandNumber(); //dealer didnt hit on a thirteen; occasionally has score reset
+				userInterface.incrementControllingHandNumber();
 			}
 			playDealersHand();
 			determineWinnerOfHand();
@@ -148,15 +144,26 @@ public class Blackjack {
 		userInterface.displayHandsOnFrame(true);
 	}
 	public void handleDoubleDownPress() {
-		//TODO:Implement double down procedure (double users bet and hit once, followed by standing)
 		getUser().subtractChips((int)getUser().getBet());
 		getUser().setBet(2*(int)getUser().getBet());
 		getUser().hit(deck,  0);
-		//userInterface.displayHandsOnFrame(true);
 		handleStandPress();
-		
+	}
+	public void handleSurrenderPress() {
+		//TODO: Implement surrendering
+	}
+	public void handleInsurancePress() {
+		//TODO: Implement taking insurance
 	}
 	
+	/**
+	 * Plays out the remainder of the dealer's hand after all players have finished theirs
+	 */
+	public void playDealersHand() {
+		while (getDealerHand().getScore() < 17) {
+			getDealer().hit(deck, 0);
+		}
+	}
 	/**
 	 * Determines based on the player's and dealers score/hand if the player won the hand and pays out bets accordingly
 	 */
@@ -199,14 +206,6 @@ public class Blackjack {
 	}
 	
 	/**
-	 * Determines if a new hand should be played based on a user prompt (or direct input via method override in JUnit tests)
-	 * @return true if a new hand should be played
-	 */
-	protected boolean startNewHand() {
-		return userInterface.askToPlayNewHand();
-	}
-	
-	/**
 	 * Displays a notification in the center of the GUI norifying the player the outcome of the hand
 	 */
 	private void finishHand() {
@@ -242,13 +241,37 @@ public class Blackjack {
 		}
 	}
 	
+	/**
+	 * Determines if a new hand should be played based on a user prompt (or direct input via method override in JUnit tests)
+	 * @return true if a new hand should be played
+	 */
+	protected boolean startNewHand() {
+		return userInterface.askToPlayNewHand();
+	}
+	
+	
+	//-----------------------Setters and getters-----------------------//
+	
+	public void setStartingChipNumber(int numberOfChips) {
+		getUser().setChipAmount(numberOfChips);
+	}
+	public void setDeck(int numberOfDecksToUse) {
+		deck = new Deck(numberOfDecksToUse);
+		deck.shuffle();
+	}
+	public void setNumberOfComputerPlayers(int numberOfPlayers) {
+		for(int i = 0; i < numberOfPlayers + 2; i++) {
+			players.add(new Player());
+		}
+	}
+	public void setDisplayGUI(boolean displayGUI) {
+		this.displayGUI = displayGUI;
+	}
+	public GUI getUserInterface() {
+		return this.userInterface;
+	}
 	public Player getDealer() {
 		return players.get(0);
-	}
-	public void playDealersHand() {
-		while (players.get(0).getSingleHand(0).getScore() < 17) {
-			getDealer().hit(deck, 0);
-		}
 	}
 	public Player getUser() {
 		return players.get(1);
@@ -263,16 +286,16 @@ public class Blackjack {
 		return getUser().getHands();
 	}
 	public boolean doesUserHaveAPair() {
-		int cardOne = getSingleUserHand(0).getCardsInHand().get(0).value;
-		int cardTwo = getSingleUserHand(0).getCardsInHand().get(1).value;
-		if(cardOne == cardTwo) {
-			return true;
-		} else {
-			return false;
-		}
+		return getSingleUserHand(0).doesHandContainPair();
 	}
 	public ArrayList<Hand> getDealerHands(){
 		return getDealer().getHands();
+	}
+	public Hand getDealerHand() {
+		return getDealer().getSingleHand(0);
+	}
+	public int getVisibleDealerCard() {
+		return getDealerHand().getCardsInHand().get(0).getValue();
 	}
 	public Hand getSingleUserHand(int handToGet) {
 		return getUser().getSingleHand(handToGet);

@@ -13,30 +13,28 @@ import org.junit.jupiter.api.Test;
 class BetTests {
 	private class MockedBlackjack extends Blackjack {
 		@Override
-        protected void setDeckSize() {
-			deck = new Deck(1);
-        }
-		@Override
-        protected void setChipAmount() {
-			getUser().setChipAmount(100);
-        }
+		protected void setupGameParameters() {
+			setNumberOfComputerPlayers(0);
+			setDeck(1);
+			setStartingChipNumber(100);
+			setDisplayGUI(false);
+			playAHand();
+		}
 		@Override
         protected void setBetAmount() {
 			getUser().setBet(100);
 			getUser().subtractChips(100);
         }
-        @Override
+		@Override
         protected boolean startNewHand() {
         	return false;
         }
     }
-	private GUI userInterface;
 	private MockedBlackjack testGame;
 	
 	@BeforeEach
 	void setupGameInstance() {
 		testGame = new MockedBlackjack();
-		userInterface = new GUI(700, 700, testGame);
 	}
 
 	@Test
@@ -62,7 +60,7 @@ class BetTests {
 		for(Card cardInHand : losingHand.getCardsInHand()) {
 			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(200, testGame.getUser().getNumberOfChips());
 	}
 	
@@ -88,7 +86,7 @@ class BetTests {
 		for(Card cardInHand : losingHand.getCardsInHand()) {
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(0, testGame.getUser().getNumberOfChips());
 	}
 	
@@ -108,7 +106,7 @@ class BetTests {
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(100, testGame.getUser().getNumberOfChips());
 	}
 	
@@ -135,7 +133,7 @@ class BetTests {
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(250, testGame.getUser().getNumberOfChips());
 	}
 
