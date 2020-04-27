@@ -264,11 +264,17 @@ public class Blackjack {
 			players.add(new Player());
 		}
 	}
+	public void setDisplayCardCounter(boolean displayCardCounter) {
+		userInterface.setDisplayCardCounter(displayCardCounter);
+	}
 	public void setDisplayGUI(boolean displayGUI) {
 		this.displayGUI = displayGUI;
 	}
 	public GUI getUserInterface() {
 		return this.userInterface;
+	}
+	public int getDeckCount() {
+		return deck.getCount();
 	}
 	public Player getDealer() {
 		return players.get(0);

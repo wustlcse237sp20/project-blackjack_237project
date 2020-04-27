@@ -6,6 +6,7 @@ public class Deck {
 	private int numberOfSingleDecksToUse;
 	private ArrayList<Card> cardsInTheDeck;
 	private ArrayList<Card> cardsDeltToPlayers = new ArrayList<Card>();
+	private int count;
 	
 	/**
 	 * Creates a new deck of cards using the supplied number of single 52 card decks
@@ -82,5 +83,7 @@ public class Deck {
 	public ArrayList<Card> getDeltCards(){
 		return this.cardsDeltToPlayers;
 	}
-	
+	public int getCount() {
+		return this.count;
+	}
 }
