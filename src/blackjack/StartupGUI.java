@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,8 +20,9 @@ public class StartupGUI implements ActionListener{
 	private JTextField chipNumberInput;
 	private JTextField computerPlayerNumberInput;
 	private Blackjack gameInstance;
+	private JCheckBox cardCounterVisible;
 	private int frameWidth = 1000;
-	private int frameHeight = 875;
+	private int frameHeight = 900;
 	
 	public StartupGUI(Blackjack gameInstance) {
 		this.gameInstance = gameInstance;
@@ -51,7 +53,7 @@ public class StartupGUI implements ActionListener{
 		addDeckInputField();
 		addChipInputField();
 		addComputerPlayerInputField();
-		
+		addCardCounterInput();
 		
 		JButton startButton = new JButton("Start Game");
 		startButton.setBounds(frameWidth/2-55, frameHeight - 90, 110, 30);
@@ -99,11 +101,11 @@ public class StartupGUI implements ActionListener{
 	 */
 	private void addDeckInputField() {
 		JLabel deckInputLabel = new JLabel("How many decks of 52 cards to use? Enter a number 1-8:");
-		deckInputLabel.setBounds(frameWidth/2 - 300, frameHeight-190, 475, 30);
+		deckInputLabel.setBounds(frameWidth/2 - 300, frameHeight-220, 475, 30);
 		deckInputLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		startFrame.getContentPane().add(deckInputLabel);
 		deckSizeInput = new JTextField("1", 1);
-		deckSizeInput.setBounds(frameWidth/2 + 225, frameHeight-190, 50, 30);
+		deckSizeInput.setBounds(frameWidth/2 + 225, frameHeight-220, 50, 30);
 		startFrame.getContentPane().add(deckSizeInput);
 	}
 	/**
@@ -111,11 +113,11 @@ public class StartupGUI implements ActionListener{
 	 */
 	private void addChipInputField() {
 		JLabel chipInputLabel = new JLabel("How many chips to start with? Enter a whole number 100 - 1000000:");
-		chipInputLabel.setBounds(frameWidth/2 - 300, frameHeight-160, 475, 30);
+		chipInputLabel.setBounds(frameWidth/2 - 300, frameHeight-190, 475, 30);
 		chipInputLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		startFrame.getContentPane().add(chipInputLabel);
 		chipNumberInput = new JTextField("1000", 1);
-		chipNumberInput.setBounds(frameWidth/2 + 225, frameHeight-160, 50, 30);
+		chipNumberInput.setBounds(frameWidth/2 + 225, frameHeight-190, 50, 30);
 		startFrame.getContentPane().add(chipNumberInput);
 	}
 	/**
@@ -123,12 +125,22 @@ public class StartupGUI implements ActionListener{
 	 */
 	private void addComputerPlayerInputField() {
 		JLabel computerPlayerInputLabel = new JLabel("How many computer players to play with? Enter a number 1 - 4:");
-		computerPlayerInputLabel.setBounds(frameWidth/2 - 300, frameHeight-130, 475, 30);
+		computerPlayerInputLabel.setBounds(frameWidth/2 - 300, frameHeight-160, 475, 30);
 		computerPlayerInputLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
 		startFrame.getContentPane().add(computerPlayerInputLabel);
 		computerPlayerNumberInput = new JTextField("0", 1);
-		computerPlayerNumberInput.setBounds(frameWidth/2 + 225, frameHeight-130, 50, 30);
+		computerPlayerNumberInput.setBounds(frameWidth/2 + 225, frameHeight-160, 50, 30);
 		startFrame.getContentPane().add(computerPlayerNumberInput);
+	}
+	
+	private void addCardCounterInput() {
+		JLabel cardCounterInputLabel = new JLabel("Display the count of the deck throughout rounds?");
+		cardCounterInputLabel.setBounds(frameWidth/2 - 300, frameHeight - 130, 475, 30);
+		cardCounterInputLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		cardCounterVisible = new JCheckBox();
+		cardCounterVisible.setBounds(frameWidth/2 + 225, frameHeight - 130, 30, 30);
+		startFrame.getContentPane().add(cardCounterVisible);
+		startFrame.getContentPane().add(cardCounterInputLabel);
 	}
 	/**
 	 * Checks to ensure all user provided input is valid
@@ -202,6 +214,7 @@ public class StartupGUI implements ActionListener{
 					gameInstance.setNumberOfComputerPlayers(Integer.parseInt(computerPlayerNumberInput.getText()));
 					gameInstance.setDeck(Integer.parseInt(deckSizeInput.getText()));
 					gameInstance.setStartingChipNumber(Integer.parseInt(chipNumberInput.getText()));
+					gameInstance.setDisplayCardCounter(cardCounterVisible.isSelected());
 					startFrame.setVisible(false);
 					gameInstance.playAHand();
 				}

@@ -23,6 +23,7 @@ public class GUI implements ActionListener{
 	private DecimalFormat decimalFormat = new DecimalFormat("#.00");
 	private int controllingHandNumber = 0;
 	private boolean hitPressed = false;
+	private boolean displayCardCounter;
 	
 	public GUI(int frameHeight, int frameWidth, Blackjack gameInstance) {
 		this.frameHeight = frameHeight;
@@ -142,6 +143,9 @@ public class GUI implements ActionListener{
 			createTextLabel(frameWidth/2 - 150, frameHeight - 400, 300, "Chips: $" + String.valueOf(decimalFormat.format(gameInstance.getUserNumberOfChips())));
 		} else {
 			createTextLabel(frameWidth/2 - 42, frameHeight - 400, 85, "Chips: $0.00");
+		}
+		if(displayCardCounter) {
+			createTextLabel(frameWidth/2 - 50, frameHeight/2-50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount()));
 		}
 	}
 	public void createInputButton(int xPosition, int yPosition, String commandToPerform) {
@@ -280,5 +284,8 @@ public class GUI implements ActionListener{
 	//----------------------------Setters and Getters----------------------------//
 	public int getControllingHandNumber(){
 		return  controllingHandNumber;
+	}
+	public void setDisplayCardCounter(boolean displayCardCounter) {
+		this.displayCardCounter = displayCardCounter;
 	}
 }
