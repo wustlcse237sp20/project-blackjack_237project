@@ -18,14 +18,14 @@ public class Hand {
 	public void addCardToHand(Card cardToAdd) {
 		cardsInHand.add(cardToAdd);
 		//TODO: Implement lowering score if an ace is to be treated as a 1 and changing the blackjack flag if needed
-		if (cardToAdd.value == 11) {
+		if (cardToAdd.getValue() == 11) {
 			aces++;
 		}
-		score += cardToAdd.value;
+		score += cardToAdd.getValue();
 	}
 	public void emptyCardsInHand() {
 		cardsInHand.clear();
-		aces=0;
+		aces = 0;
 		score = 0;
 	}
 	public boolean doesHandHaveBlackjack() {
@@ -38,7 +38,11 @@ public class Hand {
 		return this.cardsInHand;
 	}
 	public void removeCardFromHand(int cardToRemove) {
-		score -= cardsInHand.get(cardToRemove).value;
+		int valueOfCardToSubtract = cardsInHand.get(cardToRemove).getValue();
+		score -= valueOfCardToSubtract;
+		if(valueOfCardToSubtract == 11) {
+			aces--;
+		}
 		cardsInHand.remove(cardToRemove);
 	}
 	public int getScore() {
@@ -47,5 +51,12 @@ public class Hand {
 			aces--;
 		}
 		return score;
+	}
+	public boolean doesHandContainPair() {
+		if(cardsInHand.get(0).getValue() == cardsInHand.get(1).getValue()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

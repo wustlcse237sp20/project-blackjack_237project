@@ -13,39 +13,36 @@ import org.junit.jupiter.api.Test;
 class GameTests{
 	private class MockedBlackjack extends Blackjack {
 		@Override
-        protected void setDeckSize() {
-			deck = new Deck(1);
-        }
-		@Override
-        protected void setChipAmount() {
-			getUser().setChipAmount(100);
-        }
+		protected void setupGameParameters() {
+			setNumberOfComputerPlayers(0);
+			setDeck(1);
+			setStartingChipNumber(100);
+			setDisplayGUI(false);
+			playAHand();
+		}
 		@Override
         protected void setBetAmount() {
 			getUser().setBet(100);
 			getUser().subtractChips(100);
         }
-        @Override
+		@Override
         protected boolean startNewHand() {
         	return false;
         }
     }
-	private GUI userInterface;
 	private MockedBlackjack testGame;
 	
 	@BeforeEach
 	void setupGameInstance() {
 		testGame = new MockedBlackjack();
-		userInterface = new GUI(700, 700, testGame);
 	}
-	
 	
 	@Test
 	void testBustOnHit() {
 		JButton mockButton = new JButton();
 		ActionEvent mockPressHitButton = new ActionEvent(mockButton, ActionEvent.ACTION_PERFORMED,"Hit");
-		while(testGame.getSingleUserHand(0).getScore() < 21) {
-			userInterface.actionPerformed(mockPressHitButton);
+		while(testGame.getSingleUserHand(0).getScore() < 22) {
+			testGame.getUserInterface().actionPerformed(mockPressHitButton);
 		}
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), false);
@@ -68,7 +65,7 @@ class GameTests{
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), false);
 		assertEquals(testGame.isHandPushed(0), true);
@@ -89,7 +86,7 @@ class GameTests{
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), false);
 		assertEquals(testGame.isHandPushed(0), true);
@@ -118,7 +115,7 @@ class GameTests{
 		for(Card cardInHand : losingHand.getCardsInHand()) {
 			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), true);
 		assertEquals(testGame.isHandPushed(0), false);
@@ -148,7 +145,7 @@ class GameTests{
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), true);
 		assertEquals(testGame.isHandPushed(0), false);
@@ -177,7 +174,7 @@ class GameTests{
 		for(Card cardInHand : losingHand.getCardsInHand()) {
 			testGame.getSingleUserHand(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), false);
 		assertEquals(testGame.isHandPushed(0), false);
@@ -206,7 +203,7 @@ class GameTests{
 		for(Card cardInHand : blackjackHand.getCardsInHand()) {
 			testGame.getDealerHands().get(0).addCardToHand(cardInHand);
 		}
-		userInterface.actionPerformed(mockPressStandButton);
+		testGame.getUserInterface().actionPerformed(mockPressStandButton);
 		assertEquals(testGame.areUserHandsOver(), true);
 		assertEquals(testGame.isHandWon(0), false);
 		assertEquals(testGame.isHandPushed(0), false);
@@ -223,10 +220,6 @@ class GameTests{
 		testGame.getDealerHands().get(0).addCardToHand(cardToAdd2);
 		testGame.playDealersHand();
 		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 2);
-		
-		
-
-
 		
 	}
 
@@ -253,15 +246,6 @@ class GameTests{
 		testGame.getDealerHands().get(0).addCardToHand(cardToAdd3);
 		testGame.getDealerHands().get(0).addCardToHand(cardToAdd4);
 		testGame.playDealersHand();
-		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 3);
-
-
-		
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 3);	
 	}
-	
-	
-	
-	
-	
-	
 }
