@@ -173,7 +173,7 @@ public class Blackjack {
 						getUser().addChips(2*getUserBet());
 					}
 				}
-				if(handToCheck.getScore() < getDealerScore()) {
+				if(handToCheck.getScore() < getDealerScore() && getDealerScore() <= 21) {
 					handsWon.add(false);
 					handsPushed.add(false);
 				}
