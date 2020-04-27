@@ -182,6 +182,8 @@ public class Blackjack {
 	public void handleInsurancePress() {
 		//TODO: Implement taking insurance, this will require adding some code to determineWinnerOfHand to see if the insurance bet 
 		//needs to be paid out at the end of a hand
+		
+		userInterface.displayHandsOnFrame(false);
 	}
 	
 	/**

@@ -22,7 +22,7 @@ public class GUI implements ActionListener{
 	private int frameWidth;
 	private DecimalFormat decimalFormat = new DecimalFormat("#.00");
 	private int controllingHandNumber = 0;
-	private boolean hitPressed = false;
+	private boolean actionPressed = false;
 	private boolean displayCardCounter;
 	
 	public GUI(int frameHeight, int frameWidth, Blackjack gameInstance) {
@@ -59,16 +59,16 @@ public class GUI implements ActionListener{
 			}
 			createInputButton(frameWidth/2 - 125, frameHeight - 130, "Hit");
 			createInputButton(frameWidth/2, frameHeight - 130,"Stand");
-			if(!hitPressed && controllingHandNumber == 0) {
+			if(!actionPressed && controllingHandNumber == 0) {
 				createInputButton(frameWidth/2 - 250, frameHeight - 130, "Surrender");
 			}
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0) {
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !actionPressed && controllingHandNumber == 0) {
 				createInputButton(frameWidth/2 + 125, frameHeight - 130, "Double Down");
 			}
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet()/2 && !hitPressed && controllingHandNumber == 0 && gameInstance.getVisibleDealerCard() == 11) {
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet()/2 && !actionPressed && controllingHandNumber == 0 && gameInstance.getVisibleDealerCard() == 11) {
 				createInputButton(frameWidth/2 - 125, frameHeight - 100, "Take Insurance");
 			}
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0 && gameInstance.doesUserHaveAPair()) {
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !actionPressed && controllingHandNumber == 0 && gameInstance.doesUserHaveAPair()) {
 				createInputButton(frameWidth/2, frameHeight - 100, "Split");
 			}
 		}
@@ -254,9 +254,9 @@ public class GUI implements ActionListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
+		actionPressed = true;
 		switch(action) {
 			case "Hit":
-				hitPressed = true;
 				gameInstance.handleHitPress();
 				break;
 			case "Stand":
@@ -279,7 +279,7 @@ public class GUI implements ActionListener{
 	}
 	
 	public boolean askToPlayNewHand() {
-		hitPressed = false;
+		actionPressed = false;
 		int reply = JOptionPane.showConfirmDialog(null, "Play another hand?", "Blackjack", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION){
 			return true;
