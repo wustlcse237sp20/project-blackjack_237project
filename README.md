@@ -29,6 +29,7 @@
   A player should be able to take insurance.<br/>
   
 ## Features that don't work:<br/>
+  Computer players can only hit and stand, and do not have chips or place bets.
 
 ## Instructions to launch the game:<br/>
 
