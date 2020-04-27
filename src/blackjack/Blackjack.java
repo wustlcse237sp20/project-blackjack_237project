@@ -44,7 +44,6 @@ public class Blackjack {
 		setDeckSize();
 		deck.shuffle();
 		setChipAmount();
-		userInterface.initializeGUI();
 		playAHand();
 	}
 	
@@ -262,6 +261,15 @@ public class Blackjack {
 	}
 	public ArrayList<Hand> getUserHands(){
 		return getUser().getHands();
+	}
+	public boolean doesUserHaveAPair() {
+		int cardOne = getSingleUserHand(0).getCardsInHand().get(0).value;
+		int cardTwo = getSingleUserHand(0).getCardsInHand().get(1).value;
+		if(cardOne == cardTwo) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	public ArrayList<Hand> getDealerHands(){
 		return getDealer().getHands();
