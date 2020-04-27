@@ -138,10 +138,12 @@ public class GUI implements ActionListener{
 			}
 			createInputButton(frameWidth/2 - 110, frameHeight - 130, "Hit");
 			createInputButton(frameWidth/2, frameHeight - 130,"Stand");
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0) {
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0 && gameInstance.doesUserHaveAPair()) {
 				createInputButton(frameWidth/2 - 220, frameHeight - 130, "Split");
 			}
-			createInputButton(frameWidth/2 + 110, frameHeight - 130, "Double Down");
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0) {
+				createInputButton(frameWidth/2 + 110, frameHeight - 130, "Double Down");
+			}
 		}
 		createTextLabel(frameWidth/2 - 20, 150, 40, "Dealer");
 		
