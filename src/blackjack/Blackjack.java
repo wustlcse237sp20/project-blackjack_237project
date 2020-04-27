@@ -169,10 +169,10 @@ public class Blackjack {
 		//this stuff handles finishing out the rest of the round after the user surrenders, it shouldn't need to be touched
 		playDealersHand();
 		runComputerPlayersAfterUser();
-		userInterface.displayHandsOnFrame(false);
 		handsWon.add(false);
 		handsPushed.add(false);
 		handsOver = true;
+		userInterface.displayHandsOnFrame(false);
 		finishHand();
 		if(startNewHand()) {
 			playAHand();
