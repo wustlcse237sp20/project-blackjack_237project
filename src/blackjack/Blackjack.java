@@ -62,7 +62,8 @@ public class Blackjack {
 		deck.dealOutHands(players);
 		for(int i = 1; i < 3; i++) {
 			if(getNumberOfComputerPlayers() >= i) {
-				playComputerPlayerHand(i);
+				players.get(i+1).hitBasedOnRules(players.get(0), deck, (int) Math.random()*6+1);
+				userInterface.displayHandsOnFrame(true);
 			}
 		}
 		userInterface.displayHandsOnFrame(true);
@@ -146,7 +147,9 @@ public class Blackjack {
 	public void runComputerPlayersAfterUser() {
 		for(int i = 3; i < 5; i++) {
 			if(getNumberOfComputerPlayers() >= i) {
-				playComputerPlayerHand(i);
+				players.get(i+1).hitBasedOnRules(players.get(0), deck, (int) Math.random()*6+1);
+				userInterface.displayHandsOnFrame(true);
+
 			}
 		}
 	}
@@ -190,15 +193,20 @@ public class Blackjack {
 	 * Plays out the remainder of the dealer's hand after all players have finished theirs
 	 */
 	public void playDealersHand() {
+		if(getDealerHand().getScore()==17) {
+			ArrayList<Card> hand = getDealerHand().getCardsInHand();
+			for (Card card : hand) {
+				if(card.getValue()==11) {
+					getDealer().hit(deck,  0);
+					return;
+				}
+			}
+		}
 		while (getDealerHand().getScore() < 17) {
 			getDealer().hit(deck, 0);
 		}
 	}
-	public void playComputerPlayerHand(int computerPlayerNumber) {
-		//TODO: implement auto complete of the computer player's hands using random hit/stand rules
-		//No side bets, splitting, or doubling down; only hitting and standing
-		//note that the computer playres hands are players.get(computerPlayerNumber + 1) i.e. computer player 1's hand is players.get(2)
-	}
+	
 	/**
 	 * Determines based on the player's and dealers score/hand if the player won the hand and pays out bets accordingly
 	 */
