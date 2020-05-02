@@ -224,6 +224,32 @@ class GameTests{
 	}
 
 	@Test
+	void testDealerHitsSoft17() {
+		Card cardToAdd = new Card("6D", 6);
+		Card cardToAdd2 = new Card("1D", 11);
+		testGame.getDealerHands().get(0).emptyCardsInHand();
+
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd);
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd2);
+		testGame.playDealersHand();
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 3);
+		
+	}
+	
+	@Test
+	void testDealerStaysHard17() {
+		Card cardToAdd = new Card("7D", 7);
+		Card cardToAdd2 = new Card("10D", 10);
+		testGame.getDealerHands().get(0).emptyCardsInHand();
+
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd);
+		testGame.getDealerHands().get(0).addCardToHand(cardToAdd2);
+		testGame.playDealersHand();
+		assertEquals(testGame.getDealerHands().get(0).getCardsInHand().size(), 2);
+		
+	}
+	
+	@Test
 	void doubleDown() {
 		Card cardToAdd = new Card("2D", 2);
 		Card cardToAdd2 = new Card("9D", 9);

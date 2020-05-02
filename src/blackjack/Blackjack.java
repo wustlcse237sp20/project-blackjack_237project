@@ -190,6 +190,15 @@ public class Blackjack {
 	 * Plays out the remainder of the dealer's hand after all players have finished theirs
 	 */
 	public void playDealersHand() {
+		if(getDealerHand().getScore()==17) {
+			ArrayList<Card> hand = getDealerHand().getCardsInHand();
+			for (Card card : hand) {
+				if(card.getValue() ==1 ||card.getValue()==11) {
+					getDealer().hit(deck,  0);
+					return;
+				}
+			}
+		}
 		while (getDealerHand().getScore() < 17) {
 			getDealer().hit(deck, 0);
 		}
