@@ -48,43 +48,30 @@ public class Player {
 		
 		switch(type) {
 			case 1:
-				System.out.println(this.getSingleHand(0).getScore());
-				System.out.println("start");
-				if(this.getSingleHand(0).getScore()<15) {
-					System.out.println(this.getSingleHand(0).getScore());
-					System.out.println("after");
+				while(this.getSingleHand(0).getScore()<15) {
 					this.hit(deck, 0);
-					System.out.println(this.getSingleHand(0).getScore());
-					System.out.println("done");
-					break;
 				}
-				
-				
-				
-				
-				
+				break;
 			case 2:
-				if(((this.getSingleHand(0).getScore()<=16)&&(dealer.getCardsInSingleHand(0).get(0).getValue()==10||dealer.getCardsInSingleHand(0).get(0).getValue()==11))||(this.getSingleHand(0).getScore()<=11)) {
+				while(((this.getSingleHand(0).getScore()<=16)&&(dealer.getCardsInSingleHand(0).get(0).getValue()==10||dealer.getCardsInSingleHand(0).get(0).getValue()==11))||(this.getSingleHand(0).getScore()<=11)) {
 					this.hit(deck,  0);
-					break;
 				}
+				break;
 			case 3:
-				if(this.getSingleHand(0).getScore()<=11) {
+				while(this.getSingleHand(0).getScore()<=11) {
 					this.hit(deck, 0);
-					break;
 				}
+				break;
 			case 4:
-				if((this.getSingleHand(0).getScore() > 11&&this.getSingleHand(0).getScore()<16)&&(this.getCardsInSingleHand(0).get(0).getValue()==11||this.getCardsInSingleHand(0).get(1).getValue()==11)||(this.getSingleHand(0).getScore()<=11)) {
+				while((this.getSingleHand(0).getScore() > 11&&this.getSingleHand(0).getScore()<16)&&(this.getCardsInSingleHand(0).get(0).getValue()==11||this.getCardsInSingleHand(0).get(1).getValue()==11)||(this.getSingleHand(0).getScore()<=11)) {
 					this.hit(deck,  0);
-					break;
 				}
+				break;
 			case 5:
-				if(this.getSingleHand(0).getScore()<=16) {
+				while(this.getSingleHand(0).getScore()<=16) {
 					this.hit(deck, 0);
-					break;
 				}
-				
-				
+				break;
 		}
 	}
 	
