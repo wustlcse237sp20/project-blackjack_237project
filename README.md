@@ -21,15 +21,12 @@
   A player should be able to select the number of computer players to play with.<br/>
   A player should be able to set the game parameters themselves, or use default values.<br/>
   A player should be presented with a setup screen before playing that gives instructions on how to play the game.<br/>
+  Computer players should be able to play their hands in order according to randomly selected hit/stand rules.<br/>
  
  ## Stories to implement for Iteration 3:<br/>
-  Computer players should be able to play their hands in order according to randomly selected hit/stand rules.<br/>
   A player should be able to have the option to have card counting tools displayed on the screen while playing.<br/>
   A player should be able to surrender.<br/>
   A player should be able to take insurance.<br/>
-  
-## Features that don't work:<br/>
-  Computer players can only hit and stand, and do not have chips or place bets.
 
 ## Instructions to launch the game:<br/>
 
