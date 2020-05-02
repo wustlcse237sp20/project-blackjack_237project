@@ -193,7 +193,7 @@ public class Blackjack {
 		if(getDealerHand().getScore()==17) {
 			ArrayList<Card> hand = getDealerHand().getCardsInHand();
 			for (Card card : hand) {
-				if(card.getValue() ==1 ||card.getValue()==11) {
+				if(card.getValue()==11) {
 					getDealer().hit(deck,  0);
 					return;
 				}
