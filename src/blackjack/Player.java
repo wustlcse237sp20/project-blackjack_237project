@@ -48,66 +48,33 @@ public class Player {
 		
 		switch(type) {
 			case 1:
-<<<<<<< HEAD
-				
-				while(this.getSingleHand(0).getScore()<15) {
-					
-					this.hit(deck, 0);
-					
-					
-				}
-				break;
-				
-				
-				
-				
-=======
+
 				while(this.getSingleHand(0).getScore()<15) {
 					this.hit(deck, 0);
 				}
 				break;
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
+
 			case 2:
 				while(((this.getSingleHand(0).getScore()<=16)&&(dealer.getCardsInSingleHand(0).get(0).getValue()==10||dealer.getCardsInSingleHand(0).get(0).getValue()==11))||(this.getSingleHand(0).getScore()<=11)) {
 					this.hit(deck,  0);
-<<<<<<< HEAD
-					
-=======
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
 				}
 				break;
 			case 3:
 				while(this.getSingleHand(0).getScore()<=11) {
 					this.hit(deck, 0);
-<<<<<<< HEAD
-					
-=======
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
 				}
 				break;
 			case 4:
 				while((this.getSingleHand(0).getScore() > 11&&this.getSingleHand(0).getScore()<16)&&(this.getCardsInSingleHand(0).get(0).getValue()==11||this.getCardsInSingleHand(0).get(1).getValue()==11)||(this.getSingleHand(0).getScore()<=11)) {
 					this.hit(deck,  0);
-<<<<<<< HEAD
-					
-=======
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
 				}
 				break;
 			case 5:
 				while(this.getSingleHand(0).getScore()<=16) {
 					this.hit(deck, 0);
-<<<<<<< HEAD
-					
-=======
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
 				}
 				break;
-<<<<<<< HEAD
-				
-				
-=======
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
+
 		}
 	}
 	

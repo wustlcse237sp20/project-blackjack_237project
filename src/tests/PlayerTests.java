@@ -35,7 +35,7 @@ class PlayerTests {
 
 	@Test
 	void testRuleHit1() {
-<<<<<<< HEAD
+
 		testPlayer.getHands().get(0).addCardToHand(new Card("9S", 9));
 		testPlayer.getHands().get(0).addCardToHand(new Card("5S",5));
 		dealer.getHands().get(0).addCardToHand(new Card("9S", 9));
@@ -43,14 +43,7 @@ class PlayerTests {
 		testPlayer.hitBasedOnRules(dealer, testDeck,1);   //
 		assertEquals(testPlayer.getHands().get(0).getCardsInHand().size(), 3);
 		testPlayer.emptyHand();
-=======
-		testPlayer.getSingleHand(0).addCardToHand(new Card("9S", 9));
-		testPlayer.getSingleHand(0).addCardToHand(new Card("5S", 5));
-		dealer.getSingleHand(0).addCardToHand(new Card("9S", 9));
-		dealer.getSingleHand(0).addCardToHand(new Card("5S",5));
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
-		
-<<<<<<< HEAD
+
 		testPlayer.getHands().get(0).addCardToHand(new Card("9S", 9));
 		testPlayer.getHands().get(0).addCardToHand(new Card("6S",6));
 		testPlayer.hitBasedOnRules(dealer, testDeck,1); //
@@ -111,14 +104,7 @@ class PlayerTests {
 		
 		testPlayer.hitBasedOnRules(dealer, testDeck,3);
 		assertEquals(testPlayer.getHands().get(0).getCardsInHand().size(), 3);
-=======
-		//player has 14, should hit once
-		testPlayer.hitBasedOnRules(dealer, testDeck,1);
-		assertEquals(3, testPlayer.getCardsInSingleHand(0).size());
-		
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
 		testPlayer.emptyHand();
-<<<<<<< HEAD
 		testPlayer.getHands().get(0).addCardToHand(new Card("9S", 9));
 		testPlayer.getHands().get(0).addCardToHand(new Card("6S",6));
 		testPlayer.hitBasedOnRules(dealer, testDeck,3);
@@ -165,26 +151,10 @@ class PlayerTests {
 		testPlayer.emptyHand();
 		dealer.emptyHand();
 		
-		
-=======
-		testPlayer.getSingleHand(0).addCardToHand(new Card("9S", 9));
-		testPlayer.getSingleHand(0).addCardToHand(new Card("6S", 6));
-		
-		//player has 15, shouldnt hit
-		testPlayer.hitBasedOnRules(dealer, testDeck,1);
-		assertEquals(2, testPlayer.getCardsInSingleHand(0).size());
-		
-		testPlayer.emptyHand();
-		testPlayer.getSingleHand(0).addCardToHand(new Card("9S", 9));
-		testPlayer.getSingleHand(0).addCardToHand(new Card("6S", 7));
-		
-		//player has 16, shouldnt hit
-		testPlayer.hitBasedOnRules(dealer, testDeck,1);
-		assertEquals(2, testPlayer.getCardsInSingleHand(0).size());
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
-		
 	}
-<<<<<<< HEAD
+		
+		
+
 	
 	@Test
 	void testRuleHit5() {
@@ -200,7 +170,6 @@ class PlayerTests {
 		assertEquals(testPlayer.getHands().get(0).getCardsInHand().size(), 2);
 	}
 	
-=======
->>>>>>> branch 'Soft_17' of https://github.com/wustlcse237sp20/project-blackjack_237project.git
+
 
 }
