@@ -18,6 +18,7 @@
   An ace should be worth 1 or 11 depending on which gives the hand the best score.<br/>
   
  ## Implemented stories (Iteration 3):<br/>
+  A player should be given a startup screen after launching the game that describes how to play blackjack and allows them to set the game parameters<br>
   A player should be able to select the number of computer players to play with.<br/>
   A player should be able to set the game parameters themselves, or use default values.<br/>
   A player should be presented with a setup screen before playing that gives instructions on how to play the game.<br/>
