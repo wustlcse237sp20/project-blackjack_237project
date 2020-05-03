@@ -41,6 +41,3 @@ Open a windows command prompt (windows key + r, type in cmd, click ok)<br/>
 Navigate to the root directory of the repository using: cd <path\to\file><br/>
 run the command: WinBlackjack.bat<br/>
 (Alternatively, just double click the .bat file in the project directory from the file browser)<br/>
-
-## Playing a game:<br/>
-Follow the prompts to set up the parameters for the game (including entering the deck size, and starting number of chips). Then play a hand using the hit and stand buttons that appear at the bottom of the screen displaying the delt cards (it is possible that these buttons may have previously been appearing off the edge of the frame. This seems to have been fixed, but if you can't see any buttons, try resizing the window to be larger by dragging on the lower edge).
