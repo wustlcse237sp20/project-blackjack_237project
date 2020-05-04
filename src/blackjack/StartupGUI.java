@@ -88,12 +88,12 @@ public class StartupGUI implements ActionListener{
 				+ "If the dealer has blackjack but a player took insurance, the player will lose their original bet and win back chips equal to the insurance bet (with a net result of losing half of their original bet instead of the full amount).<br>"
 				+ "If a player surrenders, they recieve half of their bet back."
 		
-				+ "<h2>Begining a round of Blackjack</h2>"
+				+ "<h2>Beginning a round of Blackjack</h2>"
 				+ "Set the parameters for the game below (or leave them at their default values) and press start game. A prompt will appear "
 				+ "asking how much you would like to bet for the first round, then the round will begin and your hand will be displayed in "
 				+ "a new window along with the buttons to perform actions for that round.</html>");
 		tutorialText.setBounds(50, 20, frameWidth - 100, 645);
-		tutorialText.setFont(new Font("SansSerif", Font.PLAIN, 14));
+		tutorialText.setFont(new Font("SansSerif", Font.PLAIN, 12));
 		startFrame.getContentPane().add(tutorialText);
 	}
 	/**
