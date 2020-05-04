@@ -14,6 +14,7 @@ public class Blackjack {
 	private boolean handsOver = false;
 	public ArrayList<Boolean> handsWon;
 	private ArrayList<Boolean> handsPushed;
+	private boolean wonInsurance = false;
 
 	/**
 	 * Launches the application.
@@ -185,8 +186,15 @@ public class Blackjack {
 	public void handleInsurancePress() {
 		//TODO: Implement taking insurance, this will require adding some code to determineWinnerOfHand to see if the insurance bet 
 		//needs to be paid out at the end of a hand
-		
-		userInterface.displayHandsOnFrame(false);
+		int insuranceChips = (int)(0.5*getUser().getBet());
+		if (getUser().getNumberOfChips() >= insuranceChips) {
+			getUser().subtractChips(insuranceChips);
+			wonInsurance = true;
+		}
+		else {
+			return;
+		}
+		userInterface.displayHandsOnFrame(true);
 	}
 	
 	/**
@@ -212,7 +220,13 @@ public class Blackjack {
 	 */
 	private void determineWinnerOfHand() {
 		for(Hand handToCheck : getUser().getHands()) {
-			if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
+			int insuranceChips = (int)(0.5*getUser().getBet());
+			if(getDealerHands().get(0).doesHandHaveBlackjack() && wonInsurance) {
+				getUser().addChips((int)(getUser().getBet())+insuranceChips);
+				handsWon.add(false);
+				handsPushed.add(false);
+			}
+			else if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
 				if(handToCheck.getScore() > getDealerScore() || getDealerScore() > 21) { //if dealer busts or has lower score
 					handsWon.add(true);
 					handsPushed.add(false);
@@ -240,6 +254,7 @@ public class Blackjack {
 						getUser().addChips(getUserBet());
 					}
 				}
+				
 			} else { //user busted hand, auto loss
 				handsWon.add(false);
 				handsPushed.add(false);
@@ -372,5 +387,8 @@ public class Blackjack {
 	}
 	public boolean isHandPushed(int handToCheck) {
 		return handsPushed.get(handToCheck);
+	}
+	public void setInsurance(boolean wonInsurance) {
+		this.wonInsurance = wonInsurance;
 	}
 }
