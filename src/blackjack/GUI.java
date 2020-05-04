@@ -24,6 +24,7 @@ public class GUI implements ActionListener{
 	private int controllingHandNumber = 0;
 	private boolean actionPressed = false;
 	private boolean displayCardCounter;
+	private boolean hideDealerHand = true;
 	
 	public GUI(int frameHeight, int frameWidth, Blackjack gameInstance) {
 		this.frameHeight = frameHeight;
@@ -90,7 +91,19 @@ public class GUI implements ActionListener{
 			createTextLabel(frameWidth/2 - 42, frameHeight - 400, 85, "Chips: $0.00");
 		}
 		if(displayCardCounter) {
-			createTextLabel(frameWidth/2 - 50, frameHeight/2-50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount()));
+			if (hideDealerHand) {
+				int cardValue = gameInstance.getDealerHand().getCardsInHand().get(1).getValue();
+				if (cardValue >= 2 && cardValue <= 6) {
+					createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount() - 1));
+				}
+				else if (cardValue >= 10) {
+					createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount() + 1));
+				} else {
+					createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount()));
+				}
+			} else {
+				createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount()));
+			}
 		}
 	}
 	public void createInputButton(int xPosition, int yPosition, String commandToPerform) {
@@ -163,6 +176,7 @@ public class GUI implements ActionListener{
 	 * @param coverDealerCard
 	 */
 	public void displayHandsOnFrame(boolean coverDealerCard) {
+		hideDealerHand = coverDealerCard;
 		clearHandsFromFrame();
 		for(int i = 0; i < gameInstance.getNumberOfComputerPlayers(); i++) {
 			if(i < 2) {
@@ -207,10 +221,10 @@ public class GUI implements ActionListener{
 			}
 		} else {
 			int newXPositionStart = xPositionStart - 100;
-			for(int i = 0; i < handsToDisplay.size(); i++) {
-				ArrayList<Card> cardsToDisplay = handsToDisplay.get(i).getCardsInHand();
-				for(int j = cardsToDisplay.size() - 1; j >= 0; j--) {
-					addCardToFrame(cardsToDisplay.get(j).getCardImageFilePath(), newXPositionStart-(cardsToDisplay.size()-j-1)*15, yPosition);
+			for (Hand hand : handsToDisplay) {
+				ArrayList<Card> cardsToDisplay = hand.getCardsInHand();
+				for (int j = cardsToDisplay.size() - 1; j >= 0; j--) {
+					addCardToFrame(cardsToDisplay.get(j).getCardImageFilePath(), newXPositionStart - (cardsToDisplay.size() - j - 1) * 15, yPosition);
 				}
 				newXPositionStart += 175;
 			}
