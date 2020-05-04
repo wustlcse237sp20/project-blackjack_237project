@@ -22,7 +22,9 @@ public class GUI implements ActionListener{
 	private int frameWidth;
 	private DecimalFormat decimalFormat = new DecimalFormat("#.00");
 	private int controllingHandNumber = 0;
-	private boolean hitPressed = false;
+	private boolean actionPressed = false;
+	private boolean displayCardCounter;
+	private boolean hideDealerHand = true;
 	
 	public GUI(int frameHeight, int frameWidth, Blackjack gameInstance) {
 		this.frameHeight = frameHeight;
@@ -48,7 +50,75 @@ public class GUI implements ActionListener{
 	public void showUserInterface() {
 		frame.setVisible(true);
 	}
-	
+	/**
+	 * Adds all the buttons and text to the GUI
+	 */
+	public void initializeGUI() {
+		if(!gameInstance.areUserHandsOver()) { //only allow interaction if playing a hand
+			if(controllingHandNumber > 0) {
+				createTextLabel(frameWidth/2 - 50, frameHeight - 100,  120,  "Controlling Hand: " + String.valueOf(controllingHandNumber));
+			}
+			createInputButton(frameWidth/2 - 125, frameHeight - 130, "Hit");
+			createInputButton(frameWidth/2, frameHeight - 130,"Stand");
+			if(!actionPressed && controllingHandNumber == 0) {
+				createInputButton(frameWidth/2 - 250, frameHeight - 130, "Surrender");
+			}
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !actionPressed && controllingHandNumber == 0) {
+				createInputButton(frameWidth/2 + 125, frameHeight - 130, "Double Down");
+			}
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet()/2 && !actionPressed && controllingHandNumber == 0 && gameInstance.getVisibleDealerCard() == 11) {
+				createInputButton(frameWidth/2 - 125, frameHeight - 100, "Take Insurance");
+			}
+			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !actionPressed && controllingHandNumber == 0 && gameInstance.doesUserHaveAPair()) {
+				createInputButton(frameWidth/2, frameHeight - 100, "Split");
+			}
+		}
+		createTextLabel(frameWidth/2 - 20, 150, 40, "Dealer");
+		
+		if(gameInstance.getUserHands().size() ==  1) {
+			createTextLabel(frameWidth/2 - 30, frameHeight - 320, 60, "Score: " + String.valueOf(gameInstance.getUserHandScore(gameInstance.getSingleUserHand(0))));
+			createTextLabel(frameWidth/2 - 150, frameHeight - 335, 300, "Bet: $" + String.valueOf(decimalFormat.format(gameInstance.getUserBet())));
+		} else {
+			for(int i = 0; i < gameInstance.getUserHands().size(); i++) {
+				createTextLabel(frameWidth/2 - 125 + i*175, frameHeight - 305, 60, "Score: " + String.valueOf(gameInstance.getUserHandScore(gameInstance.getSingleUserHand(i))));
+				createTextLabel(frameWidth/2 - 245 + i*175, frameHeight - 320, 300, "Bet: $" + String.valueOf(decimalFormat.format(gameInstance.getUserBet())));
+				createTextLabel(frameWidth/2 - 125 + i*175, frameHeight - 335, 60, "Hand: " + String.valueOf(i+1));
+			}
+		}
+		if(gameInstance.getUserNumberOfChips() > 0) {
+			createTextLabel(frameWidth/2 - 150, frameHeight - 400, 300, "Chips: $" + String.valueOf(decimalFormat.format(gameInstance.getUserNumberOfChips())));
+		} else {
+			createTextLabel(frameWidth/2 - 42, frameHeight - 400, 85, "Chips: $0.00");
+		}
+		if(displayCardCounter) {
+			if (hideDealerHand) {
+				int cardValue = gameInstance.getDealerHand().getCardsInHand().get(1).getValue();
+				if (cardValue >= 2 && cardValue <= 6) {
+					createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount() - 1));
+				}
+				else if (cardValue >= 10) {
+					createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount() + 1));
+				} else {
+					createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount()));
+				}
+			} else {
+				createTextLabel(frameWidth / 2 - 50, frameHeight / 2 - 50, 100, "Count: " + String.valueOf(gameInstance.getDeckCount()));
+			}
+		}
+	}
+	public void createInputButton(int xPosition, int yPosition, String commandToPerform) {
+		JButton newButton = new JButton(commandToPerform);
+		newButton.setBounds(xPosition, yPosition, 125, 30);
+		newButton.addActionListener(this);
+		newButton.setActionCommand(commandToPerform);
+		frame.getContentPane().add(newButton);
+	}
+	public void createTextLabel(int xPosition, int yPosition, int width, String labelText) {
+		JLabel labelToCreate = new JLabel(labelText, SwingConstants.CENTER);
+		labelToCreate.setBounds(xPosition, yPosition, width, 30);
+		labelToCreate.setForeground(new Color(255,255,255));
+		frame.getContentPane().add(labelToCreate);
+	}
 	public int askForNumberOfChips() {
 		try {
 			String numberOfChips = showNumberOfChipsPrompt();
@@ -75,7 +145,6 @@ public class GUI implements ActionListener{
 	public void showChipsGoneMessage() {
 		JOptionPane.showMessageDialog(frame, "You have run out of chips", "Error", JOptionPane.ERROR_MESSAGE);
 	}
-	
 	public int askForBet() {
 		try {
 			String betAmount = showBetPrompt();
@@ -101,69 +170,25 @@ public class GUI implements ActionListener{
 				"Please enter a whole number between 1 and " + String.valueOf(decimalFormat.format(gameInstance.getUser().getNumberOfChips())), 
 				"Error", 
 				JOptionPane.ERROR_MESSAGE);
-	}
-	
-	/**
-	 * Adds all the buttons and text to the GUI
-	 */
-	public void initializeGUI() {
-		if(!gameInstance.areUserHandsOver()) { //only allow interaction if playing a hand
-			if(controllingHandNumber > 0) {
-				createTextLabel(frameWidth/2 - 50, frameHeight - 100,  120,  "Controlling Hand: " + String.valueOf(controllingHandNumber));
-			}
-			createInputButton(frameWidth/2 - 125, frameHeight - 130, "Hit");
-			createInputButton(frameWidth/2, frameHeight - 130,"Stand");
-			if(!hitPressed && controllingHandNumber == 0) {
-				createInputButton(frameWidth/2 - 250, frameHeight - 130, "Surrender");
-			}
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0) {
-				createInputButton(frameWidth/2 + 125, frameHeight - 130, "Double Down");
-			}
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet()/2 && !hitPressed && controllingHandNumber == 0 && gameInstance.getVisibleDealerCard() == 11) {
-				createInputButton(frameWidth/2 - 125, frameHeight - 100, "Take Insurance");
-			}
-			if(gameInstance.getUserNumberOfChips() >= gameInstance.getUserBet() && !hitPressed && controllingHandNumber == 0 && gameInstance.doesUserHaveAPair()) {
-				createInputButton(frameWidth/2, frameHeight - 100, "Split");
-			}
-		}
-		createTextLabel(frameWidth/2 - 20, 150, 40, "Dealer");
-		
-		if(gameInstance.getUserHands().size() ==  1) {
-			createTextLabel(frameWidth/2 - 30, frameHeight - 320, 60, "Score: " + String.valueOf(gameInstance.getUserHandScore(gameInstance.getSingleUserHand(0))));
-			createTextLabel(frameWidth/2 - 150, frameHeight - 335, 300, "Bet: $" + String.valueOf(decimalFormat.format(gameInstance.getUserBet())));
-		} else {
-			for(int i = 0; i < gameInstance.getUserHands().size(); i++) {
-				createTextLabel(frameWidth/2 - 125 + i*175, frameHeight - 305, 60, "Score: " + String.valueOf(gameInstance.getUserHandScore(gameInstance.getSingleUserHand(i))));
-				createTextLabel(frameWidth/2 - 245 + i*175, frameHeight - 320, 300, "Bet: $" + String.valueOf(decimalFormat.format(gameInstance.getUserBet())));
-				createTextLabel(frameWidth/2 - 125 + i*175, frameHeight - 335, 60, "Hand: " + String.valueOf(i+1));
-			}
-		}
-		if(gameInstance.getUserNumberOfChips() > 0) {
-			createTextLabel(frameWidth/2 - 150, frameHeight - 400, 300, "Chips: $" + String.valueOf(decimalFormat.format(gameInstance.getUserNumberOfChips())));
-		} else {
-			createTextLabel(frameWidth/2 - 42, frameHeight - 400, 85, "Chips: $0.00");
-		}
-	}
-	public void createInputButton(int xPosition, int yPosition, String commandToPerform) {
-		JButton newButton = new JButton(commandToPerform);
-		newButton.setBounds(xPosition, yPosition, 125, 30);
-		newButton.addActionListener(this);
-		newButton.setActionCommand(commandToPerform);
-		frame.getContentPane().add(newButton);
-	}
-	public void createTextLabel(int xPosition, int yPosition, int width, String labelText) {
-		JLabel labelToCreate = new JLabel(labelText, SwingConstants.CENTER);
-		labelToCreate.setBounds(xPosition, yPosition, width, 30);
-		labelToCreate.setForeground(new Color(255,255,255));
-		frame.getContentPane().add(labelToCreate);
-	}
-	
+	}	
 	/**
 	 * Adds images to the GUI for the cards in each player's hand, optionallt hiding one of the dealer's cards
 	 * @param coverDealerCard
 	 */
 	public void displayHandsOnFrame(boolean coverDealerCard) {
+		hideDealerHand = coverDealerCard;
 		clearHandsFromFrame();
+		for(int i = 0; i < gameInstance.getNumberOfComputerPlayers(); i++) {
+			if(i < 2) {
+				createTextLabel(frameWidth - 230, 135+i*200, 150, "Computer Player " + (i+1));
+				createTextLabel(frameWidth - 230, 150+i*200, 150, "Score: " + String.valueOf(gameInstance.getComputerPlayerScore(i+1)));
+				addPlayerHandToFrame(gameInstance.getComputerPlayerHands(i+1), frameWidth-200, 175+i*200);
+			} else {
+				createTextLabel(95, frameHeight - 465 - (i-2)*200, 150, "Computer Player " + (i+1));
+				createTextLabel(95, frameHeight - 450 - (i-2)*200, 150, "Score: " + String.valueOf(gameInstance.getComputerPlayerScore(i+1)));
+				addPlayerHandToFrame(gameInstance.getComputerPlayerHands(i+1), 125, frameHeight - 425 - (i-2)*200);
+			}
+		}
 		addPlayerHandToFrame(gameInstance.getUserHands(), frameWidth/2-40, frameHeight-280);
 		if(coverDealerCard) {
 			addDealerHandToFrame(gameInstance.getDealerHands(), frameWidth/2-40, 15);
@@ -196,10 +221,10 @@ public class GUI implements ActionListener{
 			}
 		} else {
 			int newXPositionStart = xPositionStart - 100;
-			for(int i = 0; i < handsToDisplay.size(); i++) {
-				ArrayList<Card> cardsToDisplay = handsToDisplay.get(i).getCardsInHand();
-				for(int j = cardsToDisplay.size() - 1; j >= 0; j--) {
-					addCardToFrame(cardsToDisplay.get(j).getCardImageFilePath(), newXPositionStart-(cardsToDisplay.size()-j-1)*15, yPosition);
+			for (Hand hand : handsToDisplay) {
+				ArrayList<Card> cardsToDisplay = hand.getCardsInHand();
+				for (int j = cardsToDisplay.size() - 1; j >= 0; j--) {
+					addCardToFrame(cardsToDisplay.get(j).getCardImageFilePath(), newXPositionStart - (cardsToDisplay.size() - j - 1) * 15, yPosition);
 				}
 				newXPositionStart += 175;
 			}
@@ -243,9 +268,9 @@ public class GUI implements ActionListener{
 	 */
 	public void actionPerformed(ActionEvent e) {
 		String action = e.getActionCommand();
+		actionPressed = true;
 		switch(action) {
 			case "Hit":
-				hitPressed = true;
 				gameInstance.handleHitPress();
 				break;
 			case "Stand":
@@ -258,11 +283,18 @@ public class GUI implements ActionListener{
 			case "Double Down":
 				gameInstance.handleDoubleDownPress();
 				break;
+			case "Surrender":
+				gameInstance.handleSurrenderPress();
+				break;
+			case "Take Insurance":
+				gameInstance.handleInsurancePress();
+				break;
 		}
 	}
 	
 	public boolean askToPlayNewHand() {
-		hitPressed = false;
+		actionPressed = false;
+		gameInstance.setInsurance(false);
 		int reply = JOptionPane.showConfirmDialog(null, "Play another hand?", "Blackjack", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION){
 			return true;
@@ -281,4 +313,8 @@ public class GUI implements ActionListener{
 	public int getControllingHandNumber(){
 		return  controllingHandNumber;
 	}
+	public void setDisplayCardCounter(boolean displayCardCounter) {
+		this.displayCardCounter = displayCardCounter;
+	}
+
 }

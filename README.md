@@ -17,14 +17,15 @@
   A player should be able to double down on their hand.<br/>
   An ace should be worth 1 or 11 depending on which gives the hand the best score.<br/>
   
- ## Stories to implement for Iteration 3:<br/>
+ ## Implemented stories (Iteration 3):<br/>
+  A player should be given a startup screen after launching the game that describes how to play blackjack and allows them to set the game parameters<br>
   A player should be able to select the number of computer players to play with.<br/>
+  A player should be able to set the game parameters themselves, or use default values.<br/>
+  A player should be presented with a setup screen before playing that gives instructions on how to play the game.<br/>
   Computer players should be able to play their hands in order according to randomly selected hit/stand rules.<br/>
   A player should be able to have the option to have card counting tools displayed on the screen while playing.<br/>
   A player should be able to surrender.<br/>
   A player should be able to take insurance.<br/>
-  
-## Features that don't work:<br/>
 
 ## Instructions to launch the game:<br/>
 
@@ -39,6 +40,3 @@ Open a windows command prompt (windows key + r, type in cmd, click ok)<br/>
 Navigate to the root directory of the repository using: cd <path\to\file><br/>
 run the command: WinBlackjack.bat<br/>
 (Alternatively, just double click the .bat file in the project directory from the file browser)<br/>
-
-## Playing a game:<br/>
-Follow the prompts to set up the parameters for the game (including entering the deck size, and starting number of chips). Then play a hand using the hit and stand buttons that appear at the bottom of the screen displaying the delt cards (it is possible that these buttons may have previously been appearing off the edge of the frame. This seems to have been fixed, but if you can't see any buttons, try resizing the window to be larger by dragging on the lower edge).

@@ -6,6 +6,7 @@ public class Deck {
 	private int numberOfSingleDecksToUse;
 	private ArrayList<Card> cardsInTheDeck;
 	private ArrayList<Card> cardsDeltToPlayers = new ArrayList<Card>();
+	private int count;
 	
 	/**
 	 * Creates a new deck of cards using the supplied number of single 52 card decks
@@ -48,6 +49,7 @@ public class Deck {
 			}
 		}
 		java.util.Collections.shuffle(cardsInTheDeck);
+		this.count = 0;
 	}
 	/**
 	 * If more than half the deck has been delt, the deck is reshuffled, then two cards are delt to each of the players in 
@@ -72,6 +74,13 @@ public class Deck {
 	public void dealNextCardToHand(Hand handToDealTo) {
 		handToDealTo.addCardToHand(cardsInTheDeck.get(0));
 		cardsDeltToPlayers.add(cardsInTheDeck.get(0));
+		int cardValue = cardsInTheDeck.get(0).getValue();
+		if (cardValue >= 2 && cardValue <= 6) {
+			count++;
+		}
+		else if (cardValue >= 10) {
+			count--;
+		}
 		cardsInTheDeck.remove(0);
 	}
 	
@@ -82,5 +91,7 @@ public class Deck {
 	public ArrayList<Card> getDeltCards(){
 		return this.cardsDeltToPlayers;
 	}
-	
+	public int getCount() {
+		return this.count;
+	}
 }

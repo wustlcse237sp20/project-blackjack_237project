@@ -14,6 +14,7 @@ public class Blackjack {
 	private boolean handsOver = false;
 	public ArrayList<Boolean> handsWon;
 	private ArrayList<Boolean> handsPushed;
+	private boolean wonInsurance = false;
 
 	/**
 	 * Launches the application.
@@ -60,6 +61,12 @@ public class Blackjack {
 		}
 		setBetAmount();
 		deck.dealOutHands(players);
+		for(int i = 1; i < 3; i++) {
+			if(getNumberOfComputerPlayers() >= i) {
+				players.get(i+1).hitBasedOnRules(players.get(0), deck, (int) Math.random()*6+1);
+				userInterface.displayHandsOnFrame(true);
+			}
+		}
 		userInterface.displayHandsOnFrame(true);
 	}
 	/**
@@ -85,13 +92,13 @@ public class Blackjack {
 		getUser().setBet(betAmount);
 		getUser().subtractChips(betAmount);
 	}
-	
 	public void handleHitPress() {
 		if(userInterface.getControllingHandNumber() == 0) {
 			getUser().hit(deck, 0);
 			userInterface.displayHandsOnFrame(true);
 			if(getUserHandScore(getUserHands().get(0)) > 21) {
 				playDealersHand();
+				runComputerPlayersAfterUser();
 				determineWinnerOfHand();
 				userInterface.displayHandsOnFrame(false);
 				finishHand();
@@ -106,6 +113,7 @@ public class Blackjack {
 				if(userInterface.getControllingHandNumber() == 2) {
 					userInterface.incrementControllingHandNumber();
 					playDealersHand();
+					runComputerPlayersAfterUser();
 					determineWinnerOfHand();
 					userInterface.displayHandsOnFrame(false);
 					finishHand();
@@ -128,11 +136,21 @@ public class Blackjack {
 				userInterface.incrementControllingHandNumber();
 			}
 			playDealersHand();
+			runComputerPlayersAfterUser();
 			determineWinnerOfHand();
 			userInterface.displayHandsOnFrame(false);
 			finishHand();
 			if(startNewHand()) {
 				playAHand();
+			}
+		}
+	}
+	public void runComputerPlayersAfterUser() {
+		for(int i = 3; i < 5; i++) {
+			if(getNumberOfComputerPlayers() >= i) {
+				players.get(i+1).hitBasedOnRules(players.get(0), deck, (int) Math.random()*6+1);
+				userInterface.displayHandsOnFrame(true);
+
 			}
 		}
 	}
@@ -151,25 +169,64 @@ public class Blackjack {
 	}
 	public void handleSurrenderPress() {
 		//TODO: Implement surrendering
+		getUser().addChips((int)(0.5*getUser().getBet()));
+		//this stuff handles finishing out the rest of the round after the user surrenders, it shouldn't need to be touched
+		playDealersHand();
+		runComputerPlayersAfterUser();
+		handsWon.add(false);
+		handsPushed.add(false);
+		handsOver = true;
+		userInterface.displayHandsOnFrame(false);
+		finishHand();
+		if(startNewHand()) {
+			playAHand();
+		}
+		
 	}
 	public void handleInsurancePress() {
-		//TODO: Implement taking insurance
+		//TODO: Implement taking insurance, this will require adding some code to determineWinnerOfHand to see if the insurance bet 
+		//needs to be paid out at the end of a hand
+		int insuranceChips = (int)(0.5*getUser().getBet());
+		if (getUser().getNumberOfChips() >= insuranceChips) {
+			getUser().subtractChips(insuranceChips);
+			wonInsurance = true;
+		}
+		else {
+			return;
+		}
+		userInterface.displayHandsOnFrame(true);
 	}
 	
 	/**
 	 * Plays out the remainder of the dealer's hand after all players have finished theirs
 	 */
 	public void playDealersHand() {
+		if(getDealerHand().getScore()==17) {
+			ArrayList<Card> hand = getDealerHand().getCardsInHand();
+			for (Card card : hand) {
+				if(card.getValue()==11) {
+					getDealer().hit(deck,  0);
+					return;
+				}
+			}
+		}
 		while (getDealerHand().getScore() < 17) {
 			getDealer().hit(deck, 0);
 		}
 	}
+	
 	/**
 	 * Determines based on the player's and dealers score/hand if the player won the hand and pays out bets accordingly
 	 */
 	private void determineWinnerOfHand() {
 		for(Hand handToCheck : getUser().getHands()) {
-			if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
+			int insuranceChips = (int)(0.5*getUser().getBet());
+			if(getDealerHands().get(0).doesHandHaveBlackjack() && wonInsurance) {
+				getUser().addChips((int)(getUser().getBet())+insuranceChips);
+				handsWon.add(false);
+				handsPushed.add(false);
+			}
+			else if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
 				if(handToCheck.getScore() > getDealerScore() || getDealerScore() > 21) { //if dealer busts or has lower score
 					handsWon.add(true);
 					handsPushed.add(false);
@@ -197,6 +254,7 @@ public class Blackjack {
 						getUser().addChips(getUserBet());
 					}
 				}
+				
 			} else { //user busted hand, auto loss
 				handsWon.add(false);
 				handsPushed.add(false);
@@ -264,11 +322,23 @@ public class Blackjack {
 			players.add(new Player());
 		}
 	}
+	public void setDisplayCardCounter(boolean displayCardCounter) {
+		userInterface.setDisplayCardCounter(displayCardCounter);
+	}
 	public void setDisplayGUI(boolean displayGUI) {
 		this.displayGUI = displayGUI;
 	}
 	public GUI getUserInterface() {
 		return this.userInterface;
+	}
+	public int getDeckCount() {
+		return deck.getCount();
+	}
+	public ArrayList<Hand> getComputerPlayerHands(int numberToGet) {
+		return players.get(numberToGet+1).getHands();
+	}
+	public int getNumberOfComputerPlayers() {
+		return players.size()-2;
 	}
 	public Player getDealer() {
 		return players.get(0);
@@ -306,6 +376,9 @@ public class Blackjack {
 	public int getUserHandScore(Hand handToGetScoreOf){
 		return handToGetScoreOf.getScore();
 	}
+	public int getComputerPlayerScore(int playerToGetScoreOf) {
+		return players.get(playerToGetScoreOf + 1).getSingleHand(0).getScore();
+	}
 	public boolean areUserHandsOver() {
 		return handsOver;
 	}
@@ -314,5 +387,8 @@ public class Blackjack {
 	}
 	public boolean isHandPushed(int handToCheck) {
 		return handsPushed.get(handToCheck);
+	}
+	public void setInsurance(boolean wonInsurance) {
+		this.wonInsurance = wonInsurance;
 	}
 }
