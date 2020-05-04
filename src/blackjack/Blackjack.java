@@ -168,7 +168,7 @@ public class Blackjack {
 	}
 	public void handleSurrenderPress() {
 		//TODO: Implement surrendering
-		
+		getUser().addChips((int)(0.5*getUser().getBet()));
 		//this stuff handles finishing out the rest of the round after the user surrenders, it shouldn't need to be touched
 		playDealersHand();
 		runComputerPlayersAfterUser();
