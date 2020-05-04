@@ -26,6 +26,9 @@
   A player should be able to have the option to have card counting tools displayed on the screen while playing.<br/>
   A player should be able to surrender.<br/>
   A player should be able to take insurance.<br/>
+  
+## Features that don't work:<br/>
+None
 
 ## Instructions to launch the game:<br/>
 

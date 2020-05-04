@@ -38,6 +38,15 @@ class GameTests{
 	}
 	
 	@Test
+	void testSurrenderPayout() {
+		testGame.handleSurrenderPress();
+		assertEquals(50, testGame.getUserNumberOfChips());
+		assertEquals(false, testGame.isHandWon(0));
+		assertEquals(false, testGame.isHandPushed(0));
+		assertEquals(true, testGame.areUserHandsOver());
+	}
+	
+	@Test
 	void testBustOnHit() {
 		JButton mockButton = new JButton();
 		ActionEvent mockPressHitButton = new ActionEvent(mockButton, ActionEvent.ACTION_PERFORMED,"Hit");

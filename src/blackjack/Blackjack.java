@@ -168,9 +168,7 @@ public class Blackjack {
 		handleStandPress();
 	}
 	public void handleSurrenderPress() {
-		//TODO: Implement surrendering
 		getUser().addChips((int)(0.5*getUser().getBet()));
-		//this stuff handles finishing out the rest of the round after the user surrenders, it shouldn't need to be touched
 		playDealersHand();
 		runComputerPlayersAfterUser();
 		handsWon.add(false);
@@ -184,15 +182,14 @@ public class Blackjack {
 		
 	}
 	public void handleInsurancePress() {
-		//TODO: Implement taking insurance, this will require adding some code to determineWinnerOfHand to see if the insurance bet 
-		//needs to be paid out at the end of a hand
 		int insuranceChips = (int)(0.5*getUser().getBet());
 		if (getUser().getNumberOfChips() >= insuranceChips) {
 			getUser().subtractChips(insuranceChips);
-			wonInsurance = true;
-		}
-		else {
-			return;
+			if(getDealerHand().doesHandHaveBlackjack()) {
+				wonInsurance = true;
+			} else {
+				wonInsurance = false;
+			}
 		}
 		userInterface.displayHandsOnFrame(true);
 	}
@@ -221,12 +218,10 @@ public class Blackjack {
 	private void determineWinnerOfHand() {
 		for(Hand handToCheck : getUser().getHands()) {
 			int insuranceChips = (int)(0.5*getUser().getBet());
-			if(getDealerHands().get(0).doesHandHaveBlackjack() && wonInsurance) {
-				getUser().addChips((int)(getUser().getBet())+insuranceChips);
-				handsWon.add(false);
-				handsPushed.add(false);
+			if(wonInsurance) {
+				getUser().addChips(2*insuranceChips);
 			}
-			else if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
+			if(handToCheck.getScore() <= 21) { //if user doesnt bust on hand
 				if(handToCheck.getScore() > getDealerScore() || getDealerScore() > 21) { //if dealer busts or has lower score
 					handsWon.add(true);
 					handsPushed.add(false);
