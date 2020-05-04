@@ -294,6 +294,7 @@ public class GUI implements ActionListener{
 	
 	public boolean askToPlayNewHand() {
 		actionPressed = false;
+		gameInstance.setInsurance(false);
 		int reply = JOptionPane.showConfirmDialog(null, "Play another hand?", "Blackjack", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION){
 			return true;
@@ -315,4 +316,5 @@ public class GUI implements ActionListener{
 	public void setDisplayCardCounter(boolean displayCardCounter) {
 		this.displayCardCounter = displayCardCounter;
 	}
+
 }
